@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.a2048_game"
+    namespace = "com.example.game2048"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.a2048_game"
+        applicationId = "com.example.game2048"
         minSdk = 35
         targetSdk = 35
         versionCode = 1
@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
