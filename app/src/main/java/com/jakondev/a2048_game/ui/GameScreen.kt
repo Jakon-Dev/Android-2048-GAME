@@ -1,4 +1,4 @@
-package com.example.game2048.ui
+package com.jakondev.game2048.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import com.example.game2048.GameViewModel
+import com.jakondev.game2048.GameViewModel
+import androidx.navigation.NavController
+
 
 @Composable
-fun GameScreen(viewModel: GameViewModel) {
+fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     val board = viewModel.board.collectAsState()
     val score = viewModel.score.collectAsState()
     val isGameOver = viewModel.isGameOver.collectAsState()
@@ -53,6 +55,11 @@ fun GameScreen(viewModel: GameViewModel) {
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = viewModel::resetGame) {
                 Text("Reiniciar")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = { navController.navigate("menu") }) {
+                Text("Volver al menú")
             }
         }
 

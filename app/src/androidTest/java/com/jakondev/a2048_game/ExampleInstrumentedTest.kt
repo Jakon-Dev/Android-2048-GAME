@@ -1,4 +1,4 @@
-package com.example.a2048_game
+package com.jakondev.a2048_game
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

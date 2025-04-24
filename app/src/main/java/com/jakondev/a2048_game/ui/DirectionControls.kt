@@ -1,4 +1,4 @@
-package com.example.game2048.ui
+package com.jakondev.game2048.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

@@ -1,4 +1,4 @@
-package com.example.game2048.ui
+package com.jakondev.game2048.ui
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.game2048.util.getTileColor
+import com.jakondev.game2048.util.getTileColor
 
 @Composable
 fun Tile(value: Int) {

@@ -1,4 +1,4 @@
-package com.example.a2048_game.ui.theme
+package com.jakondev.a2048_game.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

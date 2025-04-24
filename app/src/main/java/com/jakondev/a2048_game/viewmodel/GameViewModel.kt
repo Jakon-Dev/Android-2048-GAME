@@ -1,4 +1,4 @@
-package com.example.game2048
+package com.jakondev.game2048
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
