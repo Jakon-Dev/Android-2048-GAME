@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId = "com.example.game2048"
-        minSdk = 35
-        targetSdk = 35
+        minSdk = 26
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 

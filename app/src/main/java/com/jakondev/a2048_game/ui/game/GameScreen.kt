@@ -13,6 +13,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.jakondev.game2048.GameViewModel
 import androidx.navigation.NavController
+import com.jakondev.a2048_game.ui.game.GameControls
+import com.jakondev.a2048_game.ui.game.GameBoard
 
 
 @Composable
@@ -20,57 +22,50 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     val board = viewModel.board.collectAsState()
     val score = viewModel.score.collectAsState()
     val isGameOver = viewModel.isGameOver.collectAsState()
-
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    Row(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFBBADA0))
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+            .padding(16.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            ScoreDisplay(score.value)
+        val boxMaxHeight = maxHeight
+        val boxMaxWidth = maxWidth
 
-            board.value.forEach { row ->
-                Row {
-                    row.forEach { value ->
-                        Tile(value)
-                    }
-                }
+        if (isLandscape) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                GameBoard(board.value, boxMaxHeight)
+                GameControls(score.value, viewModel, navController)
             }
-
-            if (!isLandscape) {
-                Spacer(modifier = Modifier.height(16.dp))
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                ScoreDisplay(score.value)
+                GameBoard(board.value, boxMaxWidth)
                 DirectionControls(
                     onUp = viewModel::moveUp,
                     onDown = viewModel::moveDown,
                     onLeft = viewModel::moveLeft,
                     onRight = viewModel::moveRight
                 )
+                Row {
+                    Button(onClick = viewModel::resetGame) {
+                        Text("Reiniciar")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(onClick = { navController.navigate("menu") }) {
+                        Text("Volver al menú")
+                    }
+                }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = viewModel::resetGame) {
-                Text("Reiniciar")
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { navController.navigate("menu") }) {
-                Text("Volver al menú")
-            }
-        }
-
-        if (isLandscape) {
-            Spacer(modifier = Modifier.width(32.dp))
-            DirectionControls(
-                onUp = viewModel::moveUp,
-                onDown = viewModel::moveDown,
-                onLeft = viewModel::moveLeft,
-                onRight = viewModel::moveRight
-            )
         }
     }
 
@@ -87,6 +82,11 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
         )
     }
 }
+
+
+
+
+
 
 @Composable
 fun ScoreDisplay(score: Int) {

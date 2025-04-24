@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.jakondev.game2048.util.getTileColor
 
 @Composable
-fun Tile(value: Int) {
+fun Tile(value: Int, modifier: Modifier) {
     val scale by animateFloatAsState(
         targetValue = if (value != 0) 1f else 0f,
         label = "ScaleAnimation"
