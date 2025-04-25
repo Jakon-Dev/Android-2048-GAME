@@ -16,6 +16,15 @@ class GameViewModel : ViewModel() {
     private val _score = MutableStateFlow(0)
     val score = _score.asStateFlow()
 
+    // Contador de movimientos.
+    private val _swipes = MutableStateFlow(0)
+    val swipes = _swipes.asStateFlow()
+
+    // Incrementa el contador de movimientos.
+    fun incrementSwipes() {
+        _swipes.value++
+    }
+
     // Indica si el juego ha terminado.
     private val _isGameOver = MutableStateFlow(false)
     val isGameOver = _isGameOver.asStateFlow()

@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.unit.Dp
 
 @Composable
 fun DirectionControls(
@@ -28,37 +29,44 @@ fun DirectionControls(
     onLeft: () -> Unit,
     onRight: () -> Unit
 ) {
-    Column(
-
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    BoxWithConstraints(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(85.dp)
-        ) {
-            StylizedButton("↑", onUp)
-        }
+        val buttonSize = maxWidth * 0.22f // Porcentaje del ancho disponible
+        val outlineSize = buttonSize + 8.dp
+        val spacing = maxWidth * 0.04f
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(85.dp)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            StylizedButton("←", onLeft)
-            Spacer(modifier = Modifier.width(16.dp))
-            StylizedButton("↓", onDown)
-            Spacer(modifier = Modifier.width(16.dp))
-            StylizedButton("→", onRight)
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(buttonSize + 8.dp)
+            ) {
+                StylizedButton("↑", onUp, buttonSize, outlineSize)
+            }
+
+            Spacer(modifier = Modifier.height(spacing))
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(buttonSize + 8.dp)
+            ) {
+                StylizedButton("←", onLeft, buttonSize, outlineSize)
+                Spacer(modifier = Modifier.width(spacing))
+                StylizedButton("↓", onDown, buttonSize, outlineSize)
+                Spacer(modifier = Modifier.width(spacing))
+                StylizedButton("→", onRight, buttonSize, outlineSize)
+            }
         }
     }
 }
@@ -66,15 +74,15 @@ fun DirectionControls(
 @Composable
 fun StylizedButton(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    buttonSize: Dp,
+    outlineSize: Dp
 ) {
     var pressed by remember { mutableStateOf(false) }
 
-    val buttonColor = Color(0xFFD3D3D3) // Light grey
+    val buttonColor = Color(0xFFD3D3D3)
     val outlineColor = Color.Black
     val cornerRadius = 12.dp
-    val buttonSize = 85.dp
-    val outlineSize = 90.dp
 
     val offsetY by animateFloatAsState(
         targetValue = if (pressed) 0f else -7f,
@@ -91,8 +99,8 @@ fun StylizedButton(
         modifier = Modifier
             .offset(y = 3.dp)
             .background(outlineColor, RoundedCornerShape(cornerRadius))
-            .width(outlineSize) // Mantiene el mismo ancho
-            .height(outlineHeight.dp) // Cambia la altura animadamente
+            .width(outlineSize)
+            .height(outlineHeight.dp)
             .clip(RoundedCornerShape(cornerRadius)),
         contentAlignment = Alignment.Center,
     ) {
@@ -100,8 +108,7 @@ fun StylizedButton(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .offset(y = offsetY.dp)
-                .width(buttonSize)
-                .height(buttonSize - 10.dp)
+                .size(buttonSize)
                 .clip(RoundedCornerShape(cornerRadius))
                 .background(buttonColor)
                 .border(2.dp, outlineColor, RoundedCornerShape(cornerRadius))
@@ -122,7 +129,7 @@ fun StylizedButton(
         ) {
             Text(
                 text = text,
-                fontSize = 20.sp,
+                fontSize = (buttonSize.value * 0.25).sp, // Escalado proporcional
                 fontWeight = FontWeight.Bold,
                 color = outlineColor
             )

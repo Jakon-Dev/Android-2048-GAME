@@ -27,32 +27,39 @@ fun Tile(value: Int, modifier: Modifier) {
         label = "ColorAnimation"
     )
 
-    Box(
-        modifier = Modifier
-            .padding(4.dp)
-            .size(80.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-            .background(
-                color = backgroundColor,
-                shape = RoundedCornerShape(8.dp)
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        AnimatedContent(
-            targetState = value,
-            transitionSpec = { fadeIn() togetherWith fadeOut() },
-            label = "ValueTransition"
-        ) { targetValue ->
-            if (targetValue != 0) {
-                Text(
-                    text = targetValue.toString(),
-                    fontSize = 24.sp,
-                    color = Color.Black
-                )
+    BoxWithConstraints(modifier = modifier) {
+        val tileSize = maxWidth
+        val cornerRadius = tileSize * 0.1f
+        val fontSize = tileSize.value * 0.35f
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .background(
+                    color = backgroundColor,
+                    shape = RoundedCornerShape(cornerRadius)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedContent(
+                targetState = value,
+                transitionSpec = { fadeIn() togetherWith fadeOut() },
+                label = "ValueTransition"
+            ) { targetValue ->
+                if (targetValue != 0) {
+                    Text(
+                        text = targetValue.toString(),
+                        fontSize = fontSize.sp,
+                        color = Color.Black
+                    )
+                }
             }
         }
     }
 }
+
+
