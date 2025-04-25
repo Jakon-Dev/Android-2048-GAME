@@ -7,6 +7,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.example.game2048.R
+
 
 @Composable
 fun MainMenu(
@@ -22,17 +25,17 @@ fun MainMenu(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("2048 Game", fontSize = 32.sp, style = MaterialTheme.typography.headlineMedium)
+            Text("2048", fontSize = 32.sp, style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(onClick = onNewGame) {
-                Text("Start New Game")
+                Text(text = stringResource(id = R.string.start_new_game))
             }
 
             if (score > 0) {
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedButton(onClick = onResumeGame) {
-                    Text("Resume Game")
+                    Text(text = stringResource(id = R.string.resume_game))
                 }
             }
         }

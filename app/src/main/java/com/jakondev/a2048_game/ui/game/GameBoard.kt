@@ -5,11 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,8 +22,8 @@ fun GameBoard(board: Array<IntArray>, width: Dp, height: Dp) {
 
     Log.d("GameBoard", "Rows: $rows, Columns: $columns")
 
-    val boardPadding = width * 0.02f // podrías usar width o height aquí, depende
-    val cellSpacing = width * 0.02f // igual aquí, elegimos width como referencia
+    val boardPadding = width * 0.02f
+    val cellSpacing = width * 0.02f
 
     Log.d("GameBoard", "Board Padding: $boardPadding, Cell Spacing: $cellSpacing")
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">2048</string>
+    <string name="points">Puntos: %1$d</string>
+    <string name="start_new_game">Empezar Nueva Partida</string>
+    <string name="resume_game">Continuar Partida</string>
+    <string name="restart">Reiniciar</string>
+    <string name="menu">Menú</string>
+    <string name="game_over">¡Has Perdido!</string>
+    <string name="final_points_message">Tus puntos finales han sido: %1$d</string>
+    <string name="retry">Reintentar</string>
+</resources>

@@ -10,13 +10,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jakondev.game2048.GameViewModel
 import androidx.navigation.NavController
+import com.example.game2048.R
 import com.jakondev.a2048_game.ui.game.GameControls
 import com.jakondev.a2048_game.ui.game.GameBoard
 import rememberScreenSize
+
+
 
 @Composable
 fun GameScreen(viewModel: GameViewModel, navController: NavController) {
@@ -39,7 +43,6 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     }
 
 
-    // Obtenemos el tamaño disponible para el tablero
     val boardWidth = boardSide
     val boardHeight = boardSide
 
@@ -56,7 +59,7 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                 modifier = Modifier.fillMaxSize()
             ) {
                 GameBoard(board.value, width = boardWidth, height = boardHeight)
-                GameControls(score.value, viewModel, navController)
+                GameControls(score.value, viewModel, navController, isLandscape)
             }
         } else {
             Column(
@@ -66,33 +69,18 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
             ) {
                 ScoreDisplay(score.value)
                 GameBoard(board.value, width = boardWidth, height = boardHeight)
-                DirectionControls(
-                    onUp = viewModel::moveUp,
-                    onDown = viewModel::moveDown,
-                    onLeft = viewModel::moveLeft,
-                    onRight = viewModel::moveRight
-                )
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(spacingSmall)
-                ) {
-                    Button(onClick = viewModel::resetGame) {
-                        Text("Reiniciar")
-                    }
-                    Button(onClick = { navController.navigate("menu") }) {
-                        Text("Volver al menú")
-                    }
-                }
+                GameControls(score.value, viewModel, navController, isLandscape)
             }
         }
 
         if (isGameOver.value) {
             AlertDialog(
                 onDismissRequest = {},
-                title = { Text("¡Game Over!") },
-                text = { Text("Tu puntuación final es ${score.value}") },
+                title = { Text(text = stringResource(id = R.string.game_over)) },
+                text = { Text(text = stringResource(id = R.string.final_points_message, score.value)) },
                 confirmButton = {
                     Button(onClick = viewModel::resetGame) {
-                        Text("Reintentar")
+                        Text(text = stringResource(id = R.string.retry))
                     }
                 }
             )
@@ -106,10 +94,12 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
 @Composable
 fun ScoreDisplay(score: Int) {
     Text(
-        text = "Puntuación: $score",
+        text = stringResource(id = R.string.points, score),
         fontSize = MaterialTheme.typography.headlineSmall.fontSize,
         color = Color.White,
         modifier = Modifier
-            .padding(bottom = 8.dp) // Podés hacerlo relativo si querés, pero este tamaño es pequeño
+            .padding(bottom = 8.dp)
     )
 }
+
+
