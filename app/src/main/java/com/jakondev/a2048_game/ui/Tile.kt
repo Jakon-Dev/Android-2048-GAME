@@ -1,5 +1,6 @@
 package com.jakondev.game2048.ui
 
+import android.hardware.lights.Light
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -12,8 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jakondev.a2048_game.ui.theme.Rowdies
 import com.jakondev.game2048.util.getTileColor
 
 @Composable
@@ -53,6 +56,7 @@ fun Tile(value: Int, modifier: Modifier) {
                 if (targetValue != 0) {
                     Text(
                         text = targetValue.toString(),
+                        fontFamily = Rowdies,
                         fontSize = fontSize.sp,
                         color = Color.Black
                     )

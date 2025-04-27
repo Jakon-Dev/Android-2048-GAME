@@ -8,7 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.example.game2048.R
+import com.jakondev.a2048_game.ui.theme.Rowdies
 
 
 @Composable
@@ -25,17 +27,29 @@ fun MainMenu(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("2048", fontSize = 32.sp, style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = "2048",
+                fontSize = 32.sp,
+                fontFamily = Rowdies,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineMedium
+            )
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(onClick = onNewGame) {
-                Text(text = stringResource(id = R.string.start_new_game))
+                Text(
+                    text = stringResource(id = R.string.start_new_game),
+                    fontFamily = Rowdies,
+                )
             }
 
             if (time > 0) {
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedButton(onClick = onResumeGame) {
-                    Text(text = stringResource(id = R.string.resume_game))
+                    Text(
+                        text = stringResource(id = R.string.resume_game),
+                        fontFamily = Rowdies,
+                    )
                 }
             }
         }

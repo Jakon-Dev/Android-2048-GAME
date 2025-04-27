@@ -19,6 +19,7 @@ import com.example.game2048.R
 import com.jakondev.a2048_game.ui.game.GameControls
 import com.jakondev.a2048_game.ui.game.GameBoard
 import com.jakondev.a2048_game.ui.game.StatsDisplay
+import com.jakondev.a2048_game.ui.theme.Rowdies
 import rememberScreenSize
 
 
@@ -83,14 +84,23 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                 title = { Text(text = stringResource(id = R.string.game_over)) },
                 text = {
                     Column {
-                        Text(text = stringResource(id = R.string.final_points_message, score.value))
+                        Text(
+                            text = stringResource(id = R.string.final_points_message, score.value),
+                            fontFamily = Rowdies,
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = stringResource(id = R.string.final_time_message, formatTime(time.value)))
+                        Text(
+                            text = stringResource(id = R.string.final_time_message, formatTime(time.value)),
+                            fontFamily = Rowdies,
+                        )
                     }
                 },
                 confirmButton = {
                     Button(onClick = viewModel::resetGame) {
-                        Text(text = stringResource(id = R.string.retry))
+                        Text(
+                            text = stringResource(id = R.string.retry),
+                            fontFamily = Rowdies,
+                        )
                     }
                 }
             )

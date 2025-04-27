@@ -6,6 +6,18 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import com.example.game2048.R
+
+
+val Rowdies = FontFamily(
+    Font(R.font.rowdies_light, FontWeight.Light),
+    Font(R.font.rowdies_regular, FontWeight.Normal),
+    Font(R.font.rowdies_bold, FontWeight.Bold)
+)
+
 
 val DarkColorPalette = darkColorScheme(
     primary = PrimaryDark,

@@ -21,6 +21,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
+import com.jakondev.a2048_game.ui.theme.Rowdies
 
 @Composable
 fun DirectionControls(
@@ -129,7 +130,8 @@ fun StylizedButton(
         ) {
             Text(
                 text = text,
-                fontSize = (buttonSize.value * 0.25).sp, // Escalado proporcional
+                fontSize = (buttonSize.value * 0.5).sp, // Escalado proporcional
+                fontFamily = Rowdies,
                 fontWeight = FontWeight.Bold,
                 color = outlineColor
             )

@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.game2048.R
+import com.jakondev.a2048_game.ui.theme.Rowdies
 import com.jakondev.game2048.GameViewModel
 import com.jakondev.game2048.ui.DirectionControls
 import com.jakondev.game2048.ui.formatTime
@@ -64,13 +65,19 @@ fun GameControls(
             )
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(onClick = viewModel::resetGame) {
-                    Text(text = stringResource(id = R.string.restart))
+                    Text(
+                        text = stringResource(id = R.string.restart),
+                        fontFamily = Rowdies,
+                    )
                 }
                 Button(onClick = {
                     viewModel.pauseTimer()
                     navController.navigate("menu")
                 }) {
-                    Text(text = stringResource(id = R.string.menu))
+                    Text(
+                        text = stringResource(id = R.string.menu),
+                        fontFamily = Rowdies,
+                    )
                 }
             }
         }
@@ -93,6 +100,7 @@ fun TimeDisplay(time: String) {
     Text(
         text = stringResource(id = R.string.final_time_message, time),
         fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+        fontFamily = Rowdies,
         color = Color.White,
         modifier = Modifier
             .padding(bottom = 8.dp)
@@ -104,6 +112,7 @@ fun ScoreDisplay(score: Int) {
     Text(
         text = stringResource(id = R.string.points, score),
         fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+        fontFamily = Rowdies,
         color = Color.White,
         modifier = Modifier
             .padding(bottom = 8.dp)

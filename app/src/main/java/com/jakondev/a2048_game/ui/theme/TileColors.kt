@@ -1,19 +1,26 @@
 package com.jakondev.game2048.util
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-fun getTileColor(value: Int): Color = when (value) {
-    0 -> Color(0xFFCDC1B4)
-    2 -> Color(0xFFEEE4DA)
-    4 -> Color(0xFFEDE0C8)
-    8 -> Color(0xFFF2B179)
-    16 -> Color(0xFFF59563)
-    32 -> Color(0xFFF67C5F)
-    64 -> Color(0xFFF65E3B)
-    128 -> Color(0xFFEDCF72)
-    256 -> Color(0xFFEDCC61)
-    512 -> Color(0xFFEDC850)
-    1024 -> Color(0xFFEDC53F)
-    2048 -> Color(0xFFEDC22E)
-    else -> Color.Black
+@Composable
+fun getTileColor(value: Int): Color {
+    val isDark = isSystemInDarkTheme()
+
+    return when (value) {
+        0 -> if (isDark) EmptyTileDark else EmptyTileLight
+        2 -> if (isDark) Tile2Dark else Tile2Light
+        4 -> if (isDark) Tile4Dark else Tile4Light
+        8 -> if (isDark) Tile8Dark else Tile8Light
+        16 -> if (isDark) Tile16Dark else Tile16Light
+        32 -> if (isDark) Tile32Dark else Tile32Light
+        64 -> if (isDark) Tile64Dark else Tile64Light
+        128 -> if (isDark) Tile128Dark else Tile128Light
+        256 -> if (isDark) Tile256Dark else Tile256Light
+        512 -> if (isDark) Tile512Dark else Tile512Light
+        1024 -> if (isDark) Tile1024Dark else Tile1024Light
+        2048 -> if (isDark) Tile2048Dark else Tile2048Light
+        else -> if (isDark) SuperTileDark else SuperTileLight // para tiles mayores
+    }
 }
