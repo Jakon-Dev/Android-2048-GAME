@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import com.jakondev.a2048_game.ui.theme.getPalette
 import com.jakondev.game2048.ui.Tile
 
 @Composable
@@ -39,7 +40,7 @@ fun GameBoard(board: Array<IntArray>, width: Dp, height: Dp) {
         modifier = Modifier
             .width(width)
             .height(height)
-            .background(Color(0xFFCDC1B4))
+            .background(getPalette().secondary)
             .padding(boardPadding),
         verticalArrangement = Arrangement.spacedBy(cellSpacing),
         horizontalAlignment = Alignment.CenterHorizontally

@@ -11,16 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jakondev.a2048_game.ui.theme.Rowdies
 import com.jakondev.game2048.util.getTileColor
+import com.jakondev.game2048.util.getTileTextColor
 
 @Composable
 fun Tile(value: Int, modifier: Modifier) {
+
     val scale by animateFloatAsState(
         targetValue = if (value != 0) 1f else 0f,
         label = "ScaleAnimation"
@@ -58,7 +57,7 @@ fun Tile(value: Int, modifier: Modifier) {
                         text = targetValue.toString(),
                         fontFamily = Rowdies,
                         fontSize = fontSize.sp,
-                        color = Color.Black
+                        color = getTileTextColor(value),
                     )
                 }
             }

@@ -19,6 +19,4 @@ val Tile1024Light = Color(0xFFEDC53F)
 val Tile2048Light = Color(0xFFEDC22E)
 val SuperTileLight = Color(0xFF3C3A32) // para 4096+
 
-val TextColorLight = Color(0xFF776E65)
-val ButtonColorLight = Color(0xFF8F7A66)
-val AccentColorLight = Color(0xFFF67C5F)
+

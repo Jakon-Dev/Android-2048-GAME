@@ -1,5 +1,7 @@
 package com.jakondev.a2048_game.navigation
 
+import android.content.res.Resources
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -11,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.game2048.R
 import com.jakondev.a2048_game.ui.theme.Rowdies
+import com.jakondev.a2048_game.ui.theme.getPalette
 
 
 @Composable
@@ -19,7 +22,11 @@ fun MainMenu(
     onNewGame: () -> Unit,
     onResumeGame: () -> Unit
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = getPalette().background
+    )
+    {
         Column(
             modifier = Modifier
                 .fillMaxSize()

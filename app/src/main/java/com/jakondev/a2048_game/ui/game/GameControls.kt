@@ -3,6 +3,9 @@ package com.jakondev.a2048_game.ui.game
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -10,12 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.game2048.R
 import com.jakondev.a2048_game.ui.theme.Rowdies
+import com.jakondev.a2048_game.ui.theme.getPalette
+import com.jakondev.a2048_game.util.StylizedButton
 import com.jakondev.game2048.GameViewModel
 import com.jakondev.game2048.ui.DirectionControls
 import com.jakondev.game2048.ui.formatTime
@@ -53,9 +58,12 @@ fun GameControls(
             )
         }
     } else {
+        val buttonWidth = 120.dp
+        val buttonHeight = 50.dp
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             DirectionControls(
                 onUp = viewModel::moveUp,
@@ -63,22 +71,36 @@ fun GameControls(
                 onLeft = viewModel::moveLeft,
                 onRight = viewModel::moveRight
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(onClick = viewModel::resetGame) {
-                    Text(
-                        text = stringResource(id = R.string.restart),
-                        fontFamily = Rowdies,
-                    )
-                }
-                Button(onClick = {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(buttonHeight + 8.dp)
+            ) {
+                Spacer(modifier = Modifier.weight(3f))
+                StylizedButton(
+                    text = stringResource(id = R.string.restart),
+                    onClick = {
+                        viewModel.resetGame()
+                    },
+                    buttonWidth = buttonWidth,
+                    buttonHeight = buttonHeight,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                StylizedButton(
+                    text = stringResource(id = R.string.menu),
+                    onClick = {
                     viewModel.pauseTimer()
-                    navController.navigate("menu")
-                }) {
-                    Text(
-                        text = stringResource(id = R.string.menu),
-                        fontFamily = Rowdies,
-                    )
-                }
+                    navController.navigate("menu")},
+                    buttonWidth = buttonWidth,
+                    buttonHeight = buttonHeight,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                )
+                Spacer(modifier = Modifier.weight(3f))
             }
         }
     }
@@ -101,7 +123,7 @@ fun TimeDisplay(time: String) {
         text = stringResource(id = R.string.final_time_message, time),
         fontSize = MaterialTheme.typography.headlineSmall.fontSize,
         fontFamily = Rowdies,
-        color = Color.White,
+        color = getPalette().onBackground,
         modifier = Modifier
             .padding(bottom = 8.dp)
     )
@@ -113,7 +135,7 @@ fun ScoreDisplay(score: Int) {
         text = stringResource(id = R.string.points, score),
         fontSize = MaterialTheme.typography.headlineSmall.fontSize,
         fontFamily = Rowdies,
-        color = Color.White,
+        color = getPalette().onBackground,
         modifier = Modifier
             .padding(bottom = 8.dp)
     )

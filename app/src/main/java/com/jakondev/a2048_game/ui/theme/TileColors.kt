@@ -3,6 +3,8 @@ package com.jakondev.game2048.util
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.jakondev.a2048_game.ui.theme.PrimaryDark
+import com.jakondev.a2048_game.ui.theme.PrimaryLight
 
 @Composable
 fun getTileColor(value: Int): Color {
@@ -22,5 +24,24 @@ fun getTileColor(value: Int): Color {
         1024 -> if (isDark) Tile1024Dark else Tile1024Light
         2048 -> if (isDark) Tile2048Dark else Tile2048Light
         else -> if (isDark) SuperTileDark else SuperTileLight // para tiles mayores
+    }
+}
+
+@Composable
+fun getTileTextColor(value: Int): Color {
+    if (isSystemInDarkTheme()) {
+        return when (value) {
+            2, 4 -> PrimaryDark
+            8, 16, 32, 64 -> Color.White
+            128, 256, 512, 1024, 2048 -> PrimaryDark
+            else -> Color.White
+        }
+    } else {
+        return when (value) {
+            2, 4 -> PrimaryDark
+            8, 16, 32, 64 -> Color.White
+            128, 256, 512, 1024, 2048 -> PrimaryDark
+            else -> Color.White
+        }
     }
 }

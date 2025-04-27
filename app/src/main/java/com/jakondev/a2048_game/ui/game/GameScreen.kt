@@ -11,8 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jakondev.game2048.GameViewModel
 import androidx.navigation.NavController
 import com.example.game2048.R
@@ -20,6 +22,8 @@ import com.jakondev.a2048_game.ui.game.GameControls
 import com.jakondev.a2048_game.ui.game.GameBoard
 import com.jakondev.a2048_game.ui.game.StatsDisplay
 import com.jakondev.a2048_game.ui.theme.Rowdies
+import com.jakondev.a2048_game.ui.theme.getPalette
+import com.jakondev.a2048_game.util.StylizedButton
 import rememberScreenSize
 
 
@@ -53,7 +57,7 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFBBADA0))
+            .background(getPalette().background)
             .padding(padding)
     ) {
         if (isLandscape) {
@@ -80,8 +84,15 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
         if (isGameOver.value) {
             viewModel.pauseTimer()
             AlertDialog(
+                containerColor = getPalette().background,
                 onDismissRequest = {},
-                title = { Text(text = stringResource(id = R.string.game_over)) },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.game_over),
+                        fontFamily = Rowdies,
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
                 text = {
                     Column {
                         Text(
@@ -96,14 +107,36 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                     }
                 },
                 confirmButton = {
-                    Button(onClick = viewModel::resetGame) {
-                        Text(
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        StylizedButton(
                             text = stringResource(id = R.string.retry),
-                            fontFamily = Rowdies,
+                            onClick = {
+                                viewModel.resetGame()
+                                viewModel.resumeTimer()
+                            },
+                            buttonWidth = 120.dp,
+                            buttonHeight = 50.dp,
+                            size = 40.dp,
+                            textSize = 20.sp,
+                        )
+                        StylizedButton(
+                            text = stringResource(id = R.string.menu),
+                            onClick = {
+                                viewModel.pauseTimer()
+                                navController.navigate("menu")
+                            },
+                            buttonWidth = 120.dp,
+                            buttonHeight = 50.dp,
+                            size = 40.dp,
+                            textSize = 20.sp,
                         )
                     }
                 }
             )
+
         }
 
     }

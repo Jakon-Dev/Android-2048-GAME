@@ -1,27 +1,11 @@
 package com.jakondev.game2048.ui
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.unit.Dp
-import com.jakondev.a2048_game.ui.theme.Rowdies
+import com.jakondev.a2048_game.util.StylizedButton
 
 @Composable
 fun DirectionControls(
@@ -35,106 +19,57 @@ fun DirectionControls(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        val buttonSize = maxWidth * 0.22f // Porcentaje del ancho disponible
-        val outlineSize = buttonSize + 8.dp
+        val buttonSize = maxWidth * 0.3f
         val spacing = maxWidth * 0.04f
+        val buttonTotalHeight = buttonSize * 1f // Aseguramos suficiente espacio para animaciones
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Bottom,
+            // Flecha arriba, dentro de un Box con altura fija
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(buttonSize + 8.dp)
+                    .height(buttonTotalHeight)
+                    .wrapContentWidth(Alignment.CenterHorizontally),
+                contentAlignment = Alignment.Center
             ) {
-                StylizedButton("↑", onUp, buttonSize, outlineSize)
+                StylizedButton(
+                    text = "↑",
+                    onClick = onUp,
+                    size = buttonSize
+                )
             }
 
-            Spacer(modifier = Modifier.height(spacing))
-
+            // Las otras tres flechas en fila
             Row(
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(buttonSize + 8.dp)
+                    .height(buttonTotalHeight) // También altura fija para que no se mueva
             ) {
-                StylizedButton("←", onLeft, buttonSize, outlineSize)
+                StylizedButton(
+                    text = "←",
+                    onClick = onLeft,
+                    size = buttonSize
+                )
                 Spacer(modifier = Modifier.width(spacing))
-                StylizedButton("↓", onDown, buttonSize, outlineSize)
+                StylizedButton(
+                    text = "↓",
+                    onClick = onDown,
+                    size = buttonSize
+                )
                 Spacer(modifier = Modifier.width(spacing))
-                StylizedButton("→", onRight, buttonSize, outlineSize)
+                StylizedButton(
+                    text = "→",
+                    onClick = onRight,
+                    size = buttonSize
+                )
             }
         }
     }
 }
 
-@Composable
-fun StylizedButton(
-    text: String,
-    onClick: () -> Unit,
-    buttonSize: Dp,
-    outlineSize: Dp
-) {
-    var pressed by remember { mutableStateOf(false) }
 
-    val buttonColor = Color(0xFFD3D3D3)
-    val outlineColor = Color.Black
-    val cornerRadius = 12.dp
-
-    val offsetY by animateFloatAsState(
-        targetValue = if (pressed) 0f else -7f,
-        animationSpec = tween(durationMillis = 90),
-        label = "buttonOffsetY"
-    )
-    val outlineHeight by animateFloatAsState(
-        targetValue = if (pressed) outlineSize.value - 16 else outlineSize.value - 5,
-        animationSpec = tween(durationMillis = 90),
-        label = "outlineHeight"
-    )
-
-    Box(
-        modifier = Modifier
-            .offset(y = 3.dp)
-            .background(outlineColor, RoundedCornerShape(cornerRadius))
-            .width(outlineSize)
-            .height(outlineHeight.dp)
-            .clip(RoundedCornerShape(cornerRadius)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .offset(y = offsetY.dp)
-                .size(buttonSize)
-                .clip(RoundedCornerShape(cornerRadius))
-                .background(buttonColor)
-                .border(2.dp, outlineColor, RoundedCornerShape(cornerRadius))
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onPress = {
-                            pressed = true
-                            try {
-                                awaitRelease()
-                                onClick()
-                            } finally {
-                                pressed = false
-                            }
-                        }
-                    )
-                }
-                .semantics { contentDescription = "Direction $text" }
-        ) {
-            Text(
-                text = text,
-                fontSize = (buttonSize.value * 0.5).sp, // Escalado proporcional
-                fontFamily = Rowdies,
-                fontWeight = FontWeight.Bold,
-                color = outlineColor
-            )
-        }
-    }
-}

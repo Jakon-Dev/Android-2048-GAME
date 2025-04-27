@@ -1,6 +1,8 @@
 package com.jakondev.a2048_game.ui.theme
 
+import android.content.res.Resources
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -23,19 +25,38 @@ val DarkColorPalette = darkColorScheme(
     primary = PrimaryDark,
     onPrimary = Color.White,
     secondary = SecondaryDark,
+    onSecondary = Color.White,
+    tertiary = TertiaryDark,
+    onTertiary = Color.Black,
     background = PrimaryDark,
+    onBackground = Color.White,
     surface = TileDark,
-    onSurface = Color.White
+    onSurface = Color.White,
+    surfaceVariant = SurfaceVariantDark,
+    error = ErrorDark,
+    onError = Color.Black
 )
 
 val LightColorPalette = lightColorScheme(
     primary = PrimaryLight,
     onPrimary = Color.Black,
     secondary = SecondaryLight,
+    onSecondary = Color.Black,
+    tertiary = TertiaryLight,
+    onTertiary = Color.White,
     background = PrimaryLight,
+    onBackground = Color.Black,
     surface = TileLight,
-    onSurface = Color.Black
+    onSurface = Color.Black,
+    surfaceVariant = SurfaceVariantLight,
+    error = ErrorLight,
+    onError = Color.White
 )
+
+@Composable
+fun getPalette(): ColorScheme {
+    return if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette
+}
 
 @Composable
 fun AppTheme(content: @Composable () -> Unit) {
@@ -43,7 +64,7 @@ fun AppTheme(content: @Composable () -> Unit) {
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography, // si tienes uno personalizado
+        typography = Typography,
         content = content
     )
 }
