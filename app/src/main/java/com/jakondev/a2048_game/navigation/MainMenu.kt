@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.game2048.R
 import com.jakondev.a2048_game.ui.theme.Rowdies
 import com.jakondev.a2048_game.ui.theme.getPalette
+import com.jakondev.a2048_game.util.StylizedButton
 
 
 @Composable
@@ -22,6 +23,8 @@ fun MainMenu(
     onNewGame: () -> Unit,
     onResumeGame: () -> Unit
 ) {
+    val isLandscape = Resources.getSystem().configuration.orientation == 0
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = getPalette().background
@@ -31,35 +34,68 @@ fun MainMenu(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(32.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.weight(1f))
+
             Text(
                 text = "2048",
-                fontSize = 32.sp,
+                fontSize = 48.sp,
                 fontFamily = Rowdies,
                 fontWeight = FontWeight.Bold,
+                color = getPalette().tertiary,
                 style = MaterialTheme.typography.headlineMedium
             )
-            Spacer(modifier = Modifier.height(24.dp))
 
-            Button(onClick = onNewGame) {
-                Text(
-                    text = stringResource(id = R.string.start_new_game),
-                    fontFamily = Rowdies,
-                )
+            Text(
+                text = "By Marc Lapeña Riu",
+                fontSize = 12.sp,
+                fontFamily = Rowdies,
+                fontWeight = FontWeight.Light,
+                color = getPalette().secondary,
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            if (isLandscape) {
+                Spacer(modifier = Modifier.weight(0.5f))
+            } else {
+                Spacer(modifier = Modifier.weight(0.2f))
             }
+
+
+            StylizedButton(
+                text = stringResource(id = R.string.start_new_game),
+                onClick = onNewGame,
+                buttonWidth = 200.dp,
+                buttonHeight = 50.dp,
+                size = 40.dp,
+                textSize = 20.sp,
+            )
+
 
             if (time > 0) {
-                Spacer(modifier = Modifier.height(16.dp))
-                OutlinedButton(onClick = onResumeGame) {
-                    Text(
-                        text = stringResource(id = R.string.resume_game),
-                        fontFamily = Rowdies,
-                    )
+                if (isLandscape) {
+                    Spacer(modifier = Modifier.weight(0.3f))
+                } else {
+                    Spacer(modifier = Modifier.weight(0.05f))
                 }
+
+                StylizedButton(
+                    text = stringResource(id = R.string.resume_game),
+                    onClick = onResumeGame,
+                    buttonWidth = 200.dp,
+                    buttonHeight = 50.dp,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                    buttonColor = getPalette().secondary,
+                )
+
             }
+
+            Spacer(modifier = Modifier.weight(2f))
         }
+
     }
 }
 

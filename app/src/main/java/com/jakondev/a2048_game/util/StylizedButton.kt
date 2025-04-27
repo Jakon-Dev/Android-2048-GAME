@@ -40,12 +40,12 @@ fun StylizedButton(
     buttonHeight: Dp? = null,
     outlineWidth: Dp? = null,
     outlineHeight: Dp? = null,
-    textSize: TextUnit = 50.sp
+    textSize: TextUnit = 50.sp,
+    buttonColor: androidx.compose.ui.graphics.Color = getPalette().surface,
+    outlineColor: androidx.compose.ui.graphics.Color = getPalette().tertiary,
 ) {
     var pressed by remember { mutableStateOf(false) }
 
-    val buttonColor = getPalette().surface
-    val outlineColor = getPalette().tertiary
     val cornerRadius = 12.dp
 
     val computedButtonWidth = buttonWidth ?: size
@@ -68,45 +68,52 @@ fun StylizedButton(
     )
 
     Box(
+        contentAlignment = Alignment.BottomCenter,
         modifier = Modifier
-            .offset(y = 3.dp)
-            .background(outlineColor, RoundedCornerShape(cornerRadius))
-            .width(computedOutlineWidth)
-            .height(animatedOutlineHeight.dp)
-            .clip(RoundedCornerShape(cornerRadius)),
-        contentAlignment = Alignment.Center,
+            .width(computedButtonWidth)
+            .height(computedButtonHeight)
     ) {
         Box(
-            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .offset(y = offsetY.dp)
-                .width(computedButtonWidth)
-                .height(computedButtonHeight)
-                .clip(RoundedCornerShape(cornerRadius))
-                .background(buttonColor)
-                .border(2.dp, outlineColor, RoundedCornerShape(cornerRadius))
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onPress = {
-                            pressed = true
-                            try {
-                                awaitRelease()
-                                onClick()
-                            } finally {
-                                pressed = false
-                            }
-                        }
-                    )
-                }
-                .semantics { contentDescription = "Direction $text" }
+                .offset(y = 3.dp)
+                .background(outlineColor, RoundedCornerShape(cornerRadius))
+                .width(computedOutlineWidth)
+                .height(animatedOutlineHeight.dp)
+                .clip(RoundedCornerShape(cornerRadius)),
+            contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = text,
-                fontSize = textSize,
-                fontFamily = Rowdies,
-                fontWeight = FontWeight.Bold,
-                color = outlineColor
-            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .offset(y = offsetY.dp)
+                    .width(computedButtonWidth)
+                    .height(computedButtonHeight)
+                    .clip(RoundedCornerShape(cornerRadius))
+                    .background(buttonColor)
+                    .border(2.dp, outlineColor, RoundedCornerShape(cornerRadius))
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onPress = {
+                                pressed = true
+                                try {
+                                    awaitRelease()
+                                    onClick()
+                                } finally {
+                                    pressed = false
+                                }
+                            }
+                        )
+                    }
+                    .semantics { contentDescription = "Direction $text" }
+            ) {
+                Text(
+                    text = text,
+                    fontSize = textSize,
+                    fontFamily = Rowdies,
+                    fontWeight = FontWeight.Bold,
+                    color = outlineColor
+                )
+            }
         }
     }
 }
