@@ -13,7 +13,7 @@ import com.example.game2048.R
 
 @Composable
 fun MainMenu(
-    score: Int,
+    time: Int,
     onNewGame: () -> Unit,
     onResumeGame: () -> Unit
 ) {
@@ -32,7 +32,7 @@ fun MainMenu(
                 Text(text = stringResource(id = R.string.start_new_game))
             }
 
-            if (score > 0) {
+            if (time > 0) {
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedButton(onClick = onResumeGame) {
                     Text(text = stringResource(id = R.string.resume_game))

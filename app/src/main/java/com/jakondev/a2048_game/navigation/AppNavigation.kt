@@ -11,17 +11,18 @@ import com.jakondev.game2048.ui.GameScreen
 @Composable
 fun AppNavigation(viewModel: GameViewModel) {
     val navController = rememberNavController()
-    val score = viewModel.score.collectAsState()
+    val time = viewModel.time.collectAsState()
 
     NavHost(navController = navController, startDestination = "menu") {
         composable("menu") {
             MainMenu(
-                score = score.value,
+                time = time.value,
                 onNewGame = {
                     viewModel.resetGame()
                     navController.navigate("game")
                 },
                 onResumeGame = {
+                    viewModel.resumeTimer()
                     navController.navigate("game")
                 }
             )

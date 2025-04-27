@@ -9,4 +9,5 @@
     <string name="game_over">¡Has Perdido!</string>
     <string name="final_points_message">Tus puntos finales han sido: %1$d</string>
     <string name="retry">Reintentar</string>
+    <string name="final_time_message">Tiempo jugado: %1$s</string>
 </resources>

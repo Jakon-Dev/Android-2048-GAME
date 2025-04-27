@@ -1,8 +1,14 @@
 package com.jakondev.game2048
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 // ViewModel que gestiona el estado del juego 2048.
@@ -29,10 +35,36 @@ class GameViewModel : ViewModel() {
     private val _isGameOver = MutableStateFlow(false)
     val isGameOver = _isGameOver.asStateFlow()
 
-    // Al inicializar el ViewModel, se arranca el juego.
-    init {
-        resetGame()
+    private val _time = MutableStateFlow(0) // en segundos
+    val time: StateFlow<Int> = _time
+
+    private var isTimeRunning = false
+    private var timerJob: Job? = null
+
+
+
+    fun startTimer() {
+        if (isTimeRunning) return
+        isTimeRunning = true
+        timerJob = viewModelScope.launch {
+            while (isTimeRunning) {
+                delay(1000L)
+                _time.value += 1
+            }
+        }
     }
+
+    fun pauseTimer() {
+        isTimeRunning = false
+        timerJob?.cancel()
+    }
+
+    fun resumeTimer() {
+        if (!isTimeRunning) {
+            startTimer()
+        }
+    }
+
 
     // Reinicia el tablero y la puntuación.
     fun resetGame() {
@@ -41,6 +73,12 @@ class GameViewModel : ViewModel() {
         _isGameOver.value = false
         repeat(2) { addRandomTile(newBoard) } // Añade dos fichas al inicio
         _board.value = newBoard
+        _time.value = 0
+        startTimer()
+    }
+
+    fun resumeGame() {
+        resumeTimer()
     }
 
     // Añade una ficha aleatoria (2 o 4) en una casilla vacía.

@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.example.game2048.R
 import com.jakondev.a2048_game.ui.game.GameControls
 import com.jakondev.a2048_game.ui.game.GameBoard
+import com.jakondev.a2048_game.ui.game.StatsDisplay
 import rememberScreenSize
 
 
@@ -28,6 +29,8 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     val score = viewModel.score.collectAsState()
     val swipes = viewModel.swipes.collectAsState()
     val isGameOver = viewModel.isGameOver.collectAsState()
+    val time = viewModel.time.collectAsState()
+
 
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -59,7 +62,7 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                 modifier = Modifier.fillMaxSize()
             ) {
                 GameBoard(board.value, width = boardWidth, height = boardHeight)
-                GameControls(score.value, viewModel, navController, isLandscape)
+                GameControls(score.value, time.value, viewModel, navController, true)
             }
         } else {
             Column(
@@ -67,17 +70,24 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(spacingSmall),
                 modifier = Modifier.fillMaxSize()
             ) {
-                ScoreDisplay(score.value)
+                StatsDisplay(score.value, formatTime(time.value))
                 GameBoard(board.value, width = boardWidth, height = boardHeight)
-                GameControls(score.value, viewModel, navController, isLandscape)
+                GameControls(score.value, time.value, viewModel, navController, false)
             }
         }
 
         if (isGameOver.value) {
+            viewModel.pauseTimer()
             AlertDialog(
                 onDismissRequest = {},
                 title = { Text(text = stringResource(id = R.string.game_over)) },
-                text = { Text(text = stringResource(id = R.string.final_points_message, score.value)) },
+                text = {
+                    Column {
+                        Text(text = stringResource(id = R.string.final_points_message, score.value))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = stringResource(id = R.string.final_time_message, formatTime(time.value)))
+                    }
+                },
                 confirmButton = {
                     Button(onClick = viewModel::resetGame) {
                         Text(text = stringResource(id = R.string.retry))
@@ -85,21 +95,14 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                 }
             )
         }
+
     }
 }
 
-
-
-
-@Composable
-fun ScoreDisplay(score: Int) {
-    Text(
-        text = stringResource(id = R.string.points, score),
-        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
-        color = Color.White,
-        modifier = Modifier
-            .padding(bottom = 8.dp)
-    )
+fun formatTime(seconds: Int): String {
+    val minutes = seconds / 60
+    val remainingSeconds = seconds % 60
+    return String.format("%02d:%02d", minutes, remainingSeconds)
 }
 
 

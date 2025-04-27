@@ -8,5 +8,6 @@
     <string name="game_over">Game Over!</string>
     <string name="final_points_message">Your final points are: %1$d</string>
     <string name="retry">Retry</string>
+    <string name="final_time_message">Time played: %1$s</string>
 
 </resources>
