@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">2048</string>
     <string name="points">Puntos: %1$d</string>
     <string name="start_new_game">Nueva Partida</string>
     <string name="resume_game">Continuar Partida</string>
@@ -16,4 +15,7 @@
     <string name="coming_soon">Próximamente...</string>
     <string name="shop">Tienda</string>
     <string name="achievements">Logros</string>
+    <string name="share_via_email">Compartir</string>
+    <string name="email_subject">¡Mira mi puntuación en 2048!</string>
+    <string name="email_body">¡Ey! Acabo de lograr %1$d puntos en el 2048 y he jugado durante %2$s minutos. ¡Intenta ganarme!</string>
 </resources>

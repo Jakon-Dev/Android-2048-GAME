@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -25,7 +26,7 @@ import com.jakondev.a2048_game.ui.theme.Rowdies
 import com.jakondev.a2048_game.ui.theme.getPalette
 import com.jakondev.a2048_game.util.StylizedButton
 import rememberScreenSize
-
+import sendEmail
 
 
 @Composable
@@ -89,6 +90,8 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
 
         if (is2048.value) {
             viewModel.pauseTimer()
+            val context = LocalContext.current
+
             AlertDialog(
                 containerColor = getPalette().background,
                 onDismissRequest = {},
@@ -123,8 +126,18 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                     ) {
                         StylizedButton(
                             text = stringResource(id = R.string.resume_game),
+                            onClick = { viewModel.resumeGame() },
+                            buttonWidth = 256.dp,
+                            buttonHeight = 50.dp,
+                            size = 40.dp,
+                            textSize = 20.sp,
+                        )
+                        StylizedButton(
+                            text = stringResource(id = R.string.share_via_email),
                             onClick = {
-                                viewModel.resumeGame()
+                                val subject = context.getString(R.string.email_subject)
+                                val body = context.getString(R.string.email_body, score.value, formatTime(time.value))
+                                sendEmail(context, subject, body)
                             },
                             buttonWidth = 256.dp,
                             buttonHeight = 50.dp,
@@ -161,8 +174,8 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                     }
                 }
             )
-
         }
+
 
         if (isGameOver.value) {
             viewModel.pauseTimer()
@@ -191,19 +204,34 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                 },
                 confirmButton = {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier.padding(8.dp)
                     ) {
+                        val context = LocalContext.current
+
+                        StylizedButton(
+                            text = stringResource(id = R.string.share_via_email),
+                            onClick = {
+                                val subject = context.getString(R.string.email_subject)
+                                val body = context.getString(R.string.email_body, score.value, formatTime(time.value))
+                                sendEmail(context, subject, body)
+                            },
+                            buttonWidth = 75.dp,
+                            buttonHeight = 50.dp,
+                            size = 40.dp,
+                            textSize = 16.sp,
+                        )
+
                         StylizedButton(
                             text = stringResource(id = R.string.retry),
                             onClick = {
                                 viewModel.resetGame()
                                 viewModel.resumeTimer()
                             },
-                            buttonWidth = 120.dp,
+                            buttonWidth = 75.dp,
                             buttonHeight = 50.dp,
                             size = 40.dp,
-                            textSize = 20.sp,
+                            textSize = 16.sp,
                         )
                         StylizedButton(
                             text = stringResource(id = R.string.menu),
@@ -211,10 +239,10 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                                 viewModel.pauseTimer()
                                 navController.navigate("menu")
                             },
-                            buttonWidth = 120.dp,
+                            buttonWidth = 75.dp,
                             buttonHeight = 50.dp,
                             size = 40.dp,
-                            textSize = 20.sp,
+                            textSize = 16.sp,
                         )
                     }
                 }

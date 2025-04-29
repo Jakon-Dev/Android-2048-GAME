@@ -15,5 +15,8 @@
     <string name="coming_soon">Coming soon...</string>
     <string name="shop">Shop</string>
     <string name="achievements">Achievements</string>
+    <string name="share_via_email">Share</string>
+    <string name="email_subject">Check my score in 2048!</string>
+    <string name="email_body">Hey! I just scored %1$d points in 2048 and I have been playing for %2$s minutes. Try to beat me!</string>
 
 </resources>

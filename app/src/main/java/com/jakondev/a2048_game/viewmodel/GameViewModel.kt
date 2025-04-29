@@ -77,7 +77,7 @@ class GameViewModel : ViewModel() {
 
     // Reinicia el tablero y la puntuación.
     fun resetGame() {
-        val newBoard = SampleBoards().empty
+        val newBoard = SampleBoards().almostWon
         _score.value = 0
         _isGameOver.value = false
         _is2048.value = false
