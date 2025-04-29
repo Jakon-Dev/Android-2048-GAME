@@ -1,10 +1,13 @@
 package com.jakondev.game2048.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jakondev.a2048_game.util.StylizedButton
 
 @Composable
@@ -19,8 +22,18 @@ fun DirectionControls(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        val buttonSize = maxWidth * 0.3f
-        val spacing = maxWidth * 0.04f
+        val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        var buttonSize = maxWidth * 0.3f
+        var spacing = maxWidth * 0.04f
+        var textSize = 50.sp
+
+        if (isLandscape){
+            buttonSize = maxWidth * 0.3f
+            spacing = maxWidth * 0.04f
+            textSize = 30.sp
+        }
+
         val buttonTotalHeight = buttonSize * 1f // Aseguramos suficiente espacio para animaciones
 
         Column(
@@ -38,7 +51,8 @@ fun DirectionControls(
                 StylizedButton(
                     text = "↑",
                     onClick = onUp,
-                    size = buttonSize
+                    size = buttonSize,
+                    textSize = textSize
                 )
             }
 
@@ -53,19 +67,22 @@ fun DirectionControls(
                 StylizedButton(
                     text = "←",
                     onClick = onLeft,
-                    size = buttonSize
+                    size = buttonSize,
+                    textSize = textSize
                 )
                 Spacer(modifier = Modifier.width(spacing))
                 StylizedButton(
                     text = "↓",
                     onClick = onDown,
-                    size = buttonSize
+                    size = buttonSize,
+                    textSize = textSize
                 )
                 Spacer(modifier = Modifier.width(spacing))
                 StylizedButton(
                     text = "→",
                     onClick = onRight,
                     size = buttonSize,
+                    textSize = textSize
                 )
             }
         }

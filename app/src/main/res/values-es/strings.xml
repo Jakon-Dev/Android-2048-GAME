@@ -18,4 +18,13 @@
     <string name="share_via_email">Compartir</string>
     <string name="email_subject">¡Mira mi puntuación en 2048!</string>
     <string name="email_body">¡Ey! Acabo de lograr %1$d puntos en el 2048 y he jugado durante %2$s minutos. ¡Intenta ganarme!</string>
+    <string name="info">Información</string>
+    <string name="tutorial_combination_title">Combinación</string>
+    <string name="tutorial_combination_info">Cuando dos bloques con el mismo número se tocan, se combinan en uno solo.</string>
+    <string name="tutorial_objective_title">Objetivo</string>
+    <string name="tutorial_controles_title">Controles</string>
+    <string name="tutorial_controles_info">Pulsa las teclas de dirección (⬅️ ➡️ ⬆️ ⬇️) para mover los bloques.</string>
+    <string name="tutorial_endgame_title">Fin del juego</string>
+    <string name="tutorial_endgame_info">El juego termina cuando no quedan movimientos posibles.</string>
+    <string name="tutorial_objective_info">Combina los números hasta alcanzar el bloque 2048.</string>
 </resources>

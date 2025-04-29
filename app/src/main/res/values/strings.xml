@@ -18,5 +18,14 @@
     <string name="share_via_email">Share</string>
     <string name="email_subject">Check my score in 2048!</string>
     <string name="email_body">Hey! I just scored %1$d points in 2048 and I have been playing for %2$s minutes. Try to beat me!</string>
+    <string name="info">Information</string>
+    <string name="tutorial_objective_info">Combine numbers until you reach 2048.</string>
+    <string name="tutorial_objective_title">Objective</string>
+    <string name="tutorial_controles_title">Controls</string>
+    <string name="tutorial_controles_info">Press the direction buttons (⬅️ ➡️ ⬆️ ⬇️) to move the blocks.</string>
+    <string name="tutorial_combination_title">Combination</string>
+    <string name="tutorial_combination_info">When two blocks with the same number touch, they will join into one.</string>
+    <string name="tutorial_endgame_title">End of the game</string>
+    <string name="tutorial_endgame_info">The game ends when there are no more possible moves.</string>
 
 </resources>

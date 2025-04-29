@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,18 +18,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.game2048.R
 import com.jakondev.a2048_game.ui.theme.Rowdies
 import com.jakondev.a2048_game.ui.theme.getPalette
 import com.jakondev.a2048_game.util.BackStylizedButton
-import com.jakondev.a2048_game.util.StylizedButton
 import com.jakondev.game2048.GameViewModel
 
 
 @Composable
 fun SettingsMenu(
     viewModel: GameViewModel, //TODO -> Crear una subclase de los settings del viewModel, para solo tener que pasar este y no todo el modelo.
-    onMenu: () -> Unit,
+    navController: NavHostController,
 ) {
     val isLandscape = Resources.getSystem().configuration.orientation == 0
 
@@ -54,7 +53,9 @@ fun SettingsMenu(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 BackStylizedButton(
-                    onClick = onMenu
+                    onClick = {
+                        navController.navigate("menu")
+                    }
                 )
             }
 
@@ -64,6 +65,8 @@ fun SettingsMenu(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Spacer(modifier = Modifier.weight(0.1f))
+
                 Text(
                     text = stringResource(id = R.string.settings),
                     fontSize = 48.sp,

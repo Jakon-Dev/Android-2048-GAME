@@ -18,4 +18,13 @@
     <string name="share_via_email">Compartir</string>
     <string name="email_subject">Mira la meva puntuació en 2048!</string>
     <string name="email_body">Ei! Acabo d\'aconseguir %1$d punts al 2048 i he estat jugant durant %2$s minuts. Intenta guanyar-me!</string>
+    <string name="info">Infomació</string>
+    <string name="tutorial_objective_title">Objectiu</string>
+    <string name="tutorial_controles_title">Controls</string>
+    <string name="tutorial_controles_info">Presiona els botons (⬅️ ➡️ ⬆️ ⬇️) per a moure els blocs.</string>
+    <string name="tutorial_combination_title">Combinació</string>
+    <string name="tutorial_combination_info">Cuan dos blocs del mateix nombre es toquen, es combinen en un de sol.</string>
+    <string name="tutorial_endgame_title">Fi del joc</string>
+    <string name="tutorial_endgame_info">El joc acaba cuan no queden moviments possibles.</string>
+    <string name="tutorial_objective_info">Combina els nombres fins conseguir el 2048.</string>
 </resources>

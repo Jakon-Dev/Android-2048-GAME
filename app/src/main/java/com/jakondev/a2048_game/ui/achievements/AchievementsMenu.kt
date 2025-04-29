@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.game2048.R
 import com.jakondev.a2048_game.ui.theme.Rowdies
 import com.jakondev.a2048_game.ui.theme.getPalette
@@ -30,7 +31,7 @@ import com.jakondev.game2048.GameViewModel
 @Composable
 fun AchievementsMenu(
     viewModel: GameViewModel,
-    onMenu: () -> Unit,
+    navController: NavHostController,
 ) {
     val isLandscape = Resources.getSystem().configuration.orientation == 0
 
@@ -54,7 +55,9 @@ fun AchievementsMenu(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 BackStylizedButton(
-                    onClick = onMenu
+                    onClick = {
+                        navController.navigate("menu")
+                    }
                 )
             }
 
@@ -64,6 +67,8 @@ fun AchievementsMenu(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Spacer(modifier = Modifier.weight(0.1f))
+
                 Text(
                     text = stringResource(id = R.string.achievements),
                     fontSize = 48.sp,

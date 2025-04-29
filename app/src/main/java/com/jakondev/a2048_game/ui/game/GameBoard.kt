@@ -22,17 +22,11 @@ fun GameBoard(board: Array<IntArray>, width: Dp, height: Dp) {
     val rows = board.size
     val columns = board.firstOrNull()?.size ?: 0
 
-    Log.d("GameBoard", "Rows: $rows, Columns: $columns")
-
     val boardPadding = width * 0.04f
     val cellSpacing = width * 0.02f
 
-    Log.d("GameBoard", "Board Padding: $boardPadding, Cell Spacing: $cellSpacing")
-
     val availableWidth = width - (boardPadding * 2) - (cellSpacing * (columns - 1))
     val availableHeight = height - (boardPadding * 2) - (cellSpacing * (rows - 1))
-
-    Log.d("GameBoard", "Available Width: $availableWidth, Available Height: $availableHeight")
 
     val cellWidth = availableWidth / columns
     val cellHeight = availableHeight / rows

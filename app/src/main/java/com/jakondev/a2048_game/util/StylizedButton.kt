@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,7 +35,7 @@ import com.jakondev.a2048_game.ui.theme.getPalette
 
 @Composable
 fun StylizedButton(
-    text: String,
+    text: String = "",
     onClick: () -> Unit,
     size: Dp = 100.dp,
     outlineSize: Dp? = null,
@@ -43,6 +46,7 @@ fun StylizedButton(
     textSize: TextUnit = 50.sp,
     buttonColor: androidx.compose.ui.graphics.Color = getPalette().surface,
     outlineColor: androidx.compose.ui.graphics.Color = getPalette().tertiary,
+    icon: @Composable (() -> Unit)? = null,
 ) {
     var pressed by remember { mutableStateOf(false) }
 
@@ -106,13 +110,17 @@ fun StylizedButton(
                     }
                     .semantics { contentDescription = "Direction $text" }
             ) {
-                Text(
-                    text = text,
-                    fontSize = textSize,
-                    fontFamily = Rowdies,
-                    fontWeight = FontWeight.Bold,
-                    color = outlineColor
-                )
+                if (icon != null) {
+                    icon()
+                } else {
+                    Text(
+                        text = text,
+                        fontSize = textSize,
+                        fontFamily = Rowdies,
+                        fontWeight = FontWeight.Bold,
+                        color = outlineColor
+                    )
+                }
             }
         }
     }
@@ -121,13 +129,18 @@ fun StylizedButton(
 @Composable
 fun BackStylizedButton(
     onClick: () -> Unit
-){
+) {
     StylizedButton(
-        text = "←", //TODO, Copiar un icono mejor para volver (estoy en medio apagón 28/04/2025 y no tengo internet por si alguien lo lee)
         onClick = onClick,
         buttonWidth = 50.dp,
         buttonHeight = 50.dp,
         size = 40.dp,
-        textSize = 30.sp,
+        icon = {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = getPalette().tertiary
+            )
+        }
     )
 }

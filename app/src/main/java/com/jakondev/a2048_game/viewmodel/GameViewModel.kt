@@ -1,12 +1,16 @@
 package com.jakondev.game2048
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jakondev.a2048_game.viewmodel.SampleBoards
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -21,6 +25,9 @@ class GameViewModel : ViewModel() {
 
     private val _prevBoard = MutableStateFlow(Array(4) { IntArray(4) { 0 } })
     val prevBoard = _prevBoard.asStateFlow()
+
+    private val _canGoBack = MutableStateFlow(true)
+    val canGoBack: StateFlow<Boolean> = _canGoBack
 
     // Puntuación actual del jugador.
     private val _score = MutableStateFlow(0)
@@ -44,6 +51,7 @@ class GameViewModel : ViewModel() {
 
     private val _hasWon = MutableStateFlow(false)
     val hasWon = _hasWon.asStateFlow()
+
 
     private val _time = MutableStateFlow(0) // en segundos
     val time: StateFlow<Int> = _time
@@ -188,12 +196,21 @@ class GameViewModel : ViewModel() {
 
     fun undoMove() {
         if (!boardEquals(_board.value, _prevBoard.value)) {
-            _board.value = _prevBoard.value.map { it.clone() }.toTypedArray() // Copia profunda
-            _swipes.value = (_swipes.value - 1).coerceAtLeast(0) // No bajar de 0
-            _isGameOver.value = false // Si era Game Over, ya no lo será
+            _board.value = _prevBoard.value.map { it.clone() }.toTypedArray()
+            _swipes.value = (_swipes.value - 1).coerceAtLeast(0)
+            _isGameOver.value = false
+        } else {
+            triggerCannotUndoEffect()
         }
     }
 
+    private fun triggerCannotUndoEffect() {
+        viewModelScope.launch {
+            _canGoBack.emit(false)
+            delay(300) // Duración del parpadeo
+            _canGoBack.emit(true)
+        }
+    }
 
     // Comprueba si todavía es posible hacer algún movimiento
     private fun canMakeMove(board: Array<IntArray>): Boolean {

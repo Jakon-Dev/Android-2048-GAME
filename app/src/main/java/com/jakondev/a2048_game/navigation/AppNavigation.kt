@@ -2,6 +2,7 @@ package com.jakondev.a2048_game.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,51 +21,24 @@ fun AppNavigation(viewModel: GameViewModel) {
         composable("menu") {
             MainMenu(
                 time = time.value,
-                onNewGame = {
-                    viewModel.resetGame()
-                    navController.navigate("game")
-                },
-                onResumeGame = {
-                    viewModel.resumeTimer()
-                    navController.navigate("game")
-                },
-                onShop = {
-                    navController.navigate("shop")
-                },
-                onAchievements = {
-                    navController.navigate("achievements")
-                },
-                onSettings = {
-                    navController.navigate("settings")
-                }
+                viewModel = viewModel,
+                navController = navController
             )
         }
         composable("game") {
-            GameScreen(viewModel, navController)
+            GameScreen(viewModel = viewModel, navController = navController)
         }
-        composable("shop"){
-            ShopMenu(
-                viewModel = viewModel,
-                onMenu = {
-                    navController.navigate("menu")
-                }
-            )
+        composable("shop") {
+            ShopMenu(viewModel = viewModel, navController = navController)
         }
-        composable("achievements"){
-            AchievementsMenu(
-                viewModel = viewModel,
-                onMenu = {
-                    navController.navigate("menu")
-                }
-            )
+        composable("achievements") {
+            AchievementsMenu(viewModel = viewModel, navController = navController)
         }
-        composable("settings"){
-            SettingsMenu(
-                viewModel = viewModel,
-                onMenu = {
-                    navController.navigate("menu")
-                }
-            )
+        composable("settings") {
+            SettingsMenu(viewModel = viewModel, navController = navController)
+        }
+        composable("info") {
+            InfoMenu(navController = navController)
         }
     }
 }
