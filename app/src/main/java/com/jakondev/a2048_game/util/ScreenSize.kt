@@ -1,3 +1,5 @@
+package com.jakondev.a2048_game.util
+
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration

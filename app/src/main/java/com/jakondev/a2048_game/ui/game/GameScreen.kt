@@ -1,14 +1,15 @@
-package com.jakondev.game2048.ui
+package com.jakondev.a2048_game.ui.game
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -16,49 +17,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jakondev.game2048.GameViewModel
 import androidx.navigation.NavController
 import com.example.game2048.R
-import com.jakondev.a2048_game.ui.game.GameControls
-import com.jakondev.a2048_game.ui.game.GameBoard
-import com.jakondev.a2048_game.ui.game.StatsDisplay
-import com.jakondev.a2048_game.ui.theme.Rowdies
-import com.jakondev.a2048_game.ui.theme.getPalette
+import com.jakondev.a2048_game.ui.theme.main.Rowdies
+import com.jakondev.a2048_game.ui.theme.main.getPalette
 import com.jakondev.a2048_game.util.StylizedButton
-import rememberScreenSize
-import sendEmail
+import com.jakondev.a2048_game.util.rememberScreenSize
+import com.jakondev.a2048_game.util.sendEmail
+import com.jakondev.a2048_game.viewmodel.GameViewModel
 
 
 @Composable
 fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     val board = viewModel.board.collectAsState()
     val score = viewModel.score.collectAsState()
-    val swipes = viewModel.swipes.collectAsState()
-
+    val time = viewModel.time.collectAsState()
     val isGameOver = viewModel.isGameOver.collectAsState()
     val is2048 = viewModel.is2048.collectAsState()
 
-    val time = viewModel.time.collectAsState()
-
-    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
-
+    val configuration = LocalConfiguration.current
     val screenSize = rememberScreenSize()
-
-    val spacingSmall: Dp = screenSize.width * 0.02f
-    val padding: Dp = screenSize.width * 0.04f
-
-    val boardWidth: Dp
-    val boardHeight: Dp
-
-    if (isLandscape) {
-        boardHeight = screenSize.width * 0.3f
-        boardWidth = boardHeight
-    } else {
-        boardHeight = screenSize.height * 0.35f
-        boardWidth = boardHeight
-    }
-
-
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val spacing = screenSize.width * 0.02f
+    val padding = screenSize.width * 0.04f
+    val boardSize = if (isLandscape) screenSize.width * 0.3f else screenSize.height * 0.35f
 
     Box(
         modifier = Modifier
@@ -66,196 +48,213 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
             .background(getPalette().background)
             .padding(padding)
     ) {
-        if (isLandscape) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(spacingSmall),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                GameBoard(board.value, width = boardWidth, height = boardHeight)
-                GameControls(score.value, time.value, viewModel, navController, true)
-            }
-        } else {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(spacingSmall),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                StatsDisplay(score.value, formatTime(time.value))
-                GameBoard(board.value, width = boardWidth, height = boardHeight)
-                GameControls(score.value, time.value, viewModel, navController, false)
-            }
-        }
+        BoardLayout(
+            isLandscape = isLandscape,
+            board = board.value,
+            score = score.value,
+            time = time.value,
+            boardSize = boardSize,
+            spacing = spacing,
+            viewModel = viewModel,
+            navController = navController
+        )
 
         if (is2048.value) {
             viewModel.pauseTimer()
-            val context = LocalContext.current
-
-            AlertDialog(
-                containerColor = getPalette().background,
-                onDismissRequest = {},
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.you_win),
-                        fontFamily = Rowdies,
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
-                text = {
-                    Column {
-                        Text(
-                            text = stringResource(id = R.string.win_message),
-                            fontFamily = Rowdies,
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = stringResource(id = R.string.final_points_message, score.value),
-                            fontFamily = Rowdies,
-                        )
-                        Text(
-                            text = stringResource(id = R.string.final_time_message, formatTime(time.value)),
-                            fontFamily = Rowdies,
-                        )
-                    }
-                },
-                confirmButton = {
-                    Column (
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        StylizedButton(
-                            text = stringResource(id = R.string.resume_game),
-                            onClick = { viewModel.resumeGame() },
-                            buttonWidth = 256.dp,
-                            buttonHeight = 50.dp,
-                            size = 40.dp,
-                            textSize = 20.sp,
-                        )
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.padding(8.dp)
-                        ) {
-                            StylizedButton(
-                                text = stringResource(id = R.string.restart),
-                                onClick = {
-                                    viewModel.resetGame()
-                                    viewModel.resumeTimer()
-                                },
-                                buttonWidth = 85.dp,
-                                buttonHeight = 50.dp,
-                                size = 40.dp,
-                                textSize = 14.sp,
-                            )
-                            StylizedButton(
-                                text = stringResource(id = R.string.share_via_email),
-                                onClick = {
-                                    val subject = context.getString(R.string.email_subject)
-                                    val body = context.getString(R.string.email_body, score.value, formatTime(time.value))
-                                    sendEmail(context, subject, body)
-                                },
-                                buttonWidth = 85.dp,
-                                buttonHeight = 50.dp,
-                                size = 40.dp,
-                                textSize = 14.sp,
-                            )
-                            StylizedButton(
-                                text = stringResource(id = R.string.menu),
-                                onClick = {
-                                    viewModel.pauseTimer()
-                                    navController.navigate("menu")
-                                },
-                                buttonWidth = 85.dp,
-                                buttonHeight = 50.dp,
-                                size = 40.dp,
-                                textSize = 14.sp,
-                            )
-                        }
-                    }
-                }
-            )
+            VictoryDialog(score.value, time.value, viewModel, navController)
         }
-
 
         if (isGameOver.value) {
             viewModel.pauseTimer()
-            AlertDialog(
-                containerColor = getPalette().background,
-                onDismissRequest = {},
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.game_over),
-                        fontFamily = Rowdies,
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
-                text = {
-                    Column {
-                        Text(
-                            text = stringResource(id = R.string.points, score.value),
-                            fontFamily = Rowdies,
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = stringResource(id = R.string.final_time_message, formatTime(time.value)),
-                            fontFamily = Rowdies,
-                        )
-                    }
-                },
-                confirmButton = {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        val context = LocalContext.current
-                        StylizedButton(
-                            text = stringResource(id = R.string.retry),
-                            onClick = {
-                                viewModel.resetGame()
-                                viewModel.resumeTimer()
-                            },
-                            buttonWidth = 85.dp,
-                            buttonHeight = 50.dp,
-                            size = 40.dp,
-                            textSize = 14.sp,
-                        )
-
-                        StylizedButton(
-                            text = stringResource(id = R.string.share_via_email),
-                            onClick = {
-                                val subject = context.getString(R.string.email_subject)
-                                val body = context.getString(R.string.email_body, score.value, formatTime(time.value))
-                                sendEmail(context, subject, body)
-                            },
-                            buttonWidth = 85.dp,
-                            buttonHeight = 50.dp,
-                            size = 40.dp,
-                            textSize = 14.sp,
-                        )
-
-                        StylizedButton(
-                            text = stringResource(id = R.string.menu),
-                            onClick = {
-                                viewModel.pauseTimer()
-                                navController.navigate("menu")
-                            },
-                            buttonWidth = 85.dp,
-                            buttonHeight = 50.dp,
-                            size = 40.dp,
-                            textSize = 14.sp,
-                        )
-                    }
-                }
-            )
-
+            GameOverDialog(score.value, time.value, viewModel, navController)
         }
-
     }
 }
 
-fun formatTime(seconds: Int): String {
-    val minutes = seconds / 60
-    val remainingSeconds = seconds % 60
-    return String.format("%02d:%02d", minutes, remainingSeconds)
+@Composable
+private fun BoardLayout(
+    isLandscape: Boolean,
+    board: Array<IntArray>,
+    score: Int,
+    time: Int,
+    boardSize: Dp,
+    spacing: Dp,
+    viewModel: GameViewModel,
+    navController: NavController
+) {
+    if (isLandscape) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(spacing),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            GameBoard(board, width = boardSize, height = boardSize)
+            GameControls(score, time, viewModel, navController, isLandscape)
+        }
+    } else {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(spacing),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            StatsDisplay(score, formatTime(time))
+            GameBoard(board, width = boardSize, height = boardSize)
+            GameControls(score, time, viewModel, navController, isLandscape)
+        }
+    }
+}
+
+@Composable
+private fun VictoryDialog(score: Int, time: Int, viewModel: GameViewModel, navController: NavController) {
+    val context = LocalContext.current
+    AlertDialog(
+        containerColor = getPalette().background,
+        onDismissRequest = {},
+        title = {
+            Text(
+                text = stringResource(R.string.you_win),
+                fontFamily = Rowdies,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                Text(text = stringResource(R.string.win_message), fontFamily = Rowdies)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = stringResource(R.string.final_points_message, score), fontFamily = Rowdies)
+                Text(text = stringResource(R.string.final_time_message, formatTime(time)), fontFamily = Rowdies)
+            }
+        },
+        confirmButton = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                StylizedButton(
+                    text = stringResource(R.string.resume_game),
+                    onClick = { viewModel.resumeGame() },
+                    buttonWidth = 256.dp,
+                    buttonHeight = 50.dp,
+                    size = 40.dp,
+                    textSize = 20.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                SharedDialogButtons(score, time, viewModel, navController)
+            }
+        }
+    )
+}
+
+@Composable
+private fun GameOverDialog(score: Int, time: Int, viewModel: GameViewModel, navController: NavController) {
+    val context = LocalContext.current
+    AlertDialog(
+        containerColor = getPalette().background,
+        onDismissRequest = {},
+        title = {
+            Text(
+                text = stringResource(R.string.game_over),
+                fontFamily = Rowdies,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                Text(text = stringResource(R.string.points, score), fontFamily = Rowdies)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = stringResource(R.string.final_time_message, formatTime(time)), fontFamily = Rowdies)
+            }
+        },
+        confirmButton = {
+            SharedDialogButtons(score, time, viewModel, navController)
+        }
+    )
+}
+
+@Composable
+private fun SharedDialogButtons(
+    score: Int,
+    time: Int,
+    viewModel: GameViewModel,
+    navController: NavController
+) {
+    val context = LocalContext.current
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(8.dp)
+    ) {
+        StylizedButton(
+            text = stringResource(R.string.restart),
+            onClick = {
+                viewModel.resetGame()
+                viewModel.resumeTimer()
+            },
+            buttonWidth = 85.dp,
+            buttonHeight = 50.dp,
+            size = 40.dp,
+            textSize = 14.sp
+        )
+        StylizedButton(
+            text = stringResource(R.string.share_via_email),
+            onClick = {
+                val subject = context.getString(R.string.email_subject)
+                val body = context.getString(R.string.email_body, score, formatTime(time))
+                sendEmail(context, subject, body)
+            },
+            buttonWidth = 85.dp,
+            buttonHeight = 50.dp,
+            size = 40.dp,
+            textSize = 14.sp
+        )
+        StylizedButton(
+            text = stringResource(R.string.menu),
+            onClick = {
+                viewModel.pauseTimer()
+                navController.navigate("menu")
+            },
+            buttonWidth = 85.dp,
+            buttonHeight = 50.dp,
+            size = 40.dp,
+            textSize = 14.sp
+        )
+    }
+}
+
+@Composable
+fun StatsDisplay(score: Int, time: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        ScoreDisplay(score)
+        TimeDisplay(time)
+    }
+}
+
+@Composable
+fun TimeDisplay(time: String) {
+    Text(
+        text = stringResource(id = R.string.final_time_message, time),
+        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+        fontFamily = Rowdies,
+        color = getPalette().onBackground,
+        modifier = Modifier
+            .padding(bottom = 8.dp)
+    )
+}
+
+@Composable
+fun ScoreDisplay(score: Int) {
+    Text(
+        text = stringResource(id = R.string.points, score),
+        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+        fontFamily = Rowdies,
+        color = getPalette().onBackground,
+        modifier = Modifier
+            .padding(bottom = 8.dp)
+    )
 }
 
 
+fun formatTime(seconds: Int): String {
+    val minutes = seconds / 60
+    val remaining = seconds % 60
+    return String.format("%02d:%02d", minutes, remaining)
+}

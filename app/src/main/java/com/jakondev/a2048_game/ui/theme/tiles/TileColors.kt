@@ -1,10 +1,9 @@
-package com.jakondev.game2048.util
+package com.jakondev.a2048_game.ui.theme.tiles
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.jakondev.a2048_game.ui.theme.PrimaryDark
-import com.jakondev.a2048_game.ui.theme.PrimaryLight
+import com.jakondev.a2048_game.ui.theme.main.PrimaryDark
 
 @Composable
 fun getTileColor(value: Int): Color {

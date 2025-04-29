@@ -1,35 +1,43 @@
 package com.jakondev.a2048_game.ui.game
 
-import android.util.Log
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
-import com.jakondev.a2048_game.ui.theme.getPalette
-import com.jakondev.game2048.ui.Tile
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
+import com.jakondev.a2048_game.ui.theme.main.Rowdies
+import com.jakondev.a2048_game.ui.theme.main.getPalette
+import com.jakondev.a2048_game.ui.theme.tiles.getTileColor
+import com.jakondev.a2048_game.ui.theme.tiles.getTileTextColor
 
 @Composable
-fun GameBoard(board: Array<IntArray>, width: Dp, height: Dp) {
+fun GameBoard(
+    board: Array<IntArray>,
+    width: Dp,
+    height: Dp
+) {
     val rows = board.size
-    val columns = board.firstOrNull()?.size ?: 0
+    val columns = board.firstOrNull()?.size ?: return
 
-    val boardPadding = width * 0.04f
-    val cellSpacing = width * 0.02f
+    // Board spacing and sizing
+    val padding = width * 0.04f
+    val spacing = width * 0.02f
 
-    val availableWidth = width - (boardPadding * 2) - (cellSpacing * (columns - 1))
-    val availableHeight = height - (boardPadding * 2) - (cellSpacing * (rows - 1))
-
-    val cellWidth = availableWidth / columns
-    val cellHeight = availableHeight / rows
+    val cellWidth = (width - 2 * padding - spacing * (columns - 1)) / columns
+    val cellHeight = (height - 2 * padding - spacing * (rows - 1)) / rows
 
     val cornerRadius = height * 0.025f
 
@@ -41,21 +49,20 @@ fun GameBoard(board: Array<IntArray>, width: Dp, height: Dp) {
                 color = getPalette().secondary,
                 shape = RoundedCornerShape(cornerRadius)
             )
-            .padding(boardPadding),
-        verticalArrangement = Arrangement.spacedBy(cellSpacing),
+            .padding(padding),
+        verticalArrangement = Arrangement.spacedBy(spacing),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         board.forEach { row ->
             Row(
-                horizontalArrangement = Arrangement.spacedBy(cellSpacing),
+                horizontalArrangement = Arrangement.spacedBy(spacing),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 row.forEach { value ->
-                    Tile(
-                        value,
-                        Modifier
-                            .width(cellWidth)
-                            .height(cellHeight)
+                    GameTile(
+                        value = value,
+                        width = cellWidth,
+                        height = cellHeight
                     )
                 }
             }
@@ -64,3 +71,60 @@ fun GameBoard(board: Array<IntArray>, width: Dp, height: Dp) {
 }
 
 
+@Composable
+fun GameTile(
+    value: Int,
+    width: Dp,
+    height: Dp
+) {
+    val scale by animateFloatAsState(
+        targetValue = if (value != 0) 1f else 0f,
+        label = "TileScale"
+    )
+
+    val backgroundColor by animateColorAsState(
+        targetValue = getTileColor(value),
+        label = "TileColor"
+    )
+
+    BoxWithConstraints(
+        modifier = Modifier
+            .width(width)
+            .height(height)
+    ) {
+        val size = maxWidth
+        val cornerRadius = size * 0.1f
+        val fontSize = size.value * 0.35f
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .background(
+                    color = backgroundColor,
+                    shape = RoundedCornerShape(cornerRadius)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedContent(
+                targetState = value,
+                transitionSpec = {
+                    fadeIn() togetherWith fadeOut()
+                },
+                label = "TileValue"
+            ) { targetValue ->
+                if (targetValue != 0) {
+                    Text(
+                        text = targetValue.toString(),
+                        fontFamily = Rowdies,
+                        fontSize = fontSize.sp,
+                        color = getTileTextColor(value)
+                    )
+                }
+            }
+        }
+    }
+}

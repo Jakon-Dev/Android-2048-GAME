@@ -1,4 +1,4 @@
-package com.jakondev.a2048_game.navigation
+package com.jakondev.a2048_game.ui.navigation
 
 import android.content.res.Resources
 import androidx.compose.foundation.layout.*
@@ -17,10 +17,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.example.game2048.R
-import com.jakondev.a2048_game.ui.theme.Rowdies
-import com.jakondev.a2048_game.ui.theme.getPalette
+import com.jakondev.a2048_game.ui.theme.main.Rowdies
+import com.jakondev.a2048_game.ui.theme.main.getPalette
 import com.jakondev.a2048_game.util.StylizedButton
-import com.jakondev.game2048.GameViewModel
+import com.jakondev.a2048_game.viewmodel.GameViewModel
 
 
 @Composable

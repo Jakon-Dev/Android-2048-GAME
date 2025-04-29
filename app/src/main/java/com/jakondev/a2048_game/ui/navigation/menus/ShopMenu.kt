@@ -1,5 +1,6 @@
-package com.jakondev.a2048_game.ui.achievements
+package com.jakondev.a2048_game.ui.navigation.menus
 
+import android.content.res.Configuration
 import android.content.res.Resources
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,32 +9,31 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.game2048.R
-import com.jakondev.a2048_game.ui.theme.Rowdies
-import com.jakondev.a2048_game.ui.theme.getPalette
+import com.jakondev.a2048_game.ui.theme.main.Rowdies
+import com.jakondev.a2048_game.ui.theme.main.getPalette
 import com.jakondev.a2048_game.util.BackStylizedButton
-import com.jakondev.a2048_game.util.StylizedButton
-import com.jakondev.game2048.GameViewModel
+import com.jakondev.a2048_game.viewmodel.GameViewModel
 
 
 @Composable
-fun AchievementsMenu(
+fun ShopMenu(
     viewModel: GameViewModel,
     navController: NavHostController,
 ) {
-    val isLandscape = Resources.getSystem().configuration.orientation == 0
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -70,7 +70,7 @@ fun AchievementsMenu(
                 Spacer(modifier = Modifier.weight(0.1f))
 
                 Text(
-                    text = stringResource(id = R.string.achievements),
+                    text = stringResource(id = R.string.shop),
                     fontSize = 48.sp,
                     fontFamily = Rowdies,
                     fontWeight = FontWeight.Bold,

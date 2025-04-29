@@ -1,3 +1,5 @@
+package com.jakondev.a2048_game.util
+
 import android.content.Context
 import android.content.Intent
 import android.net.Uri

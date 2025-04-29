@@ -1,6 +1,5 @@
-package com.jakondev.a2048_game.ui.theme
+package com.jakondev.a2048_game.ui.theme.main
 
-import android.content.res.Resources
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme

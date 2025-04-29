@@ -1,4 +1,4 @@
-package com.jakondev.a2048_game.ui.theme
+package com.jakondev.a2048_game.ui.theme.main
 
 import androidx.compose.ui.graphics.Color
 

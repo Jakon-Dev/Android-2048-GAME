@@ -1,8 +1,6 @@
-package com.jakondev.a2048_game.navigation
+package com.jakondev.a2048_game.ui.navigation.menus
 
 import android.content.res.Configuration
-import android.content.res.Resources
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.game2048.R
-import com.jakondev.a2048_game.ui.theme.Rowdies
-import com.jakondev.a2048_game.ui.theme.getPalette
+import com.jakondev.a2048_game.ui.theme.main.Rowdies
+import com.jakondev.a2048_game.ui.theme.main.getPalette
 import com.jakondev.a2048_game.util.BackStylizedButton
 
 @Composable

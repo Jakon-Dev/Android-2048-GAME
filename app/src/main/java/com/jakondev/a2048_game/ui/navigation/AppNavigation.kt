@@ -1,16 +1,16 @@
-package com.jakondev.a2048_game.navigation
+package com.jakondev.a2048_game.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.jakondev.a2048_game.ui.achievements.AchievementsMenu
-import com.jakondev.a2048_game.ui.settings.SettingsMenu
-import com.jakondev.a2048_game.ui.shop.ShopMenu
-import com.jakondev.game2048.GameViewModel
-import com.jakondev.game2048.ui.GameScreen
+import com.jakondev.a2048_game.ui.navigation.menus.AchievementsMenu
+import com.jakondev.a2048_game.ui.navigation.menus.SettingsMenu
+import com.jakondev.a2048_game.ui.navigation.menus.ShopMenu
+import com.jakondev.a2048_game.viewmodel.GameViewModel
+import com.jakondev.a2048_game.ui.game.GameScreen
+import com.jakondev.a2048_game.ui.navigation.menus.InfoMenu
 
 @Composable
 fun AppNavigation(viewModel: GameViewModel) {
