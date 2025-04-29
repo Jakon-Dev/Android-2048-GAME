@@ -33,7 +33,10 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     val board = viewModel.board.collectAsState()
     val score = viewModel.score.collectAsState()
     val swipes = viewModel.swipes.collectAsState()
+
     val isGameOver = viewModel.isGameOver.collectAsState()
+    val is2048 = viewModel.is2048.collectAsState()
+
     val time = viewModel.time.collectAsState()
 
 
@@ -44,15 +47,18 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     val spacingSmall: Dp = screenSize.width * 0.02f
     val padding: Dp = screenSize.width * 0.04f
 
-    val boardSide = if (screenSize.isLandscape) {
-        screenSize.height.coerceAtMost(screenSize.width / 2)
+    val boardWidth: Dp
+    val boardHeight: Dp
+
+    if (isLandscape) {
+        boardHeight = screenSize.width * 0.3f
+        boardWidth = boardHeight
     } else {
-        screenSize.width.coerceAtMost(screenSize.height / 2)
+        boardHeight = screenSize.height * 0.35f
+        boardWidth = boardHeight
     }
 
 
-    val boardWidth = boardSide
-    val boardHeight = boardSide
 
     Box(
         modifier = Modifier
@@ -81,6 +87,83 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
             }
         }
 
+        if (is2048.value) {
+            viewModel.pauseTimer()
+            AlertDialog(
+                containerColor = getPalette().background,
+                onDismissRequest = {},
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.you_win),
+                        fontFamily = Rowdies,
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
+                text = {
+                    Column {
+                        Text(
+                            text = stringResource(id = R.string.win_message),
+                            fontFamily = Rowdies,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(id = R.string.final_points_message, score.value),
+                            fontFamily = Rowdies,
+                        )
+                        Text(
+                            text = stringResource(id = R.string.final_time_message, formatTime(time.value)),
+                            fontFamily = Rowdies,
+                        )
+                    }
+                },
+                confirmButton = {
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        StylizedButton(
+                            text = stringResource(id = R.string.resume_game),
+                            onClick = {
+                                viewModel.resumeGame()
+                            },
+                            buttonWidth = 256.dp,
+                            buttonHeight = 50.dp,
+                            size = 40.dp,
+                            textSize = 20.sp,
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            StylizedButton(
+                                text = stringResource(id = R.string.restart),
+                                onClick = {
+                                    viewModel.resetGame()
+                                    viewModel.resumeTimer()
+                                },
+                                buttonWidth = 120.dp,
+                                buttonHeight = 50.dp,
+                                size = 40.dp,
+                                textSize = 20.sp,
+                            )
+                            StylizedButton(
+                                text = stringResource(id = R.string.menu),
+                                onClick = {
+                                    viewModel.pauseTimer()
+                                    navController.navigate("menu")
+                                },
+                                buttonWidth = 120.dp,
+                                buttonHeight = 50.dp,
+                                size = 40.dp,
+                                textSize = 20.sp,
+                            )
+                        }
+                    }
+                }
+            )
+
+        }
+
         if (isGameOver.value) {
             viewModel.pauseTimer()
             AlertDialog(
@@ -96,7 +179,7 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
                 text = {
                     Column {
                         Text(
-                            text = stringResource(id = R.string.final_points_message, score.value),
+                            text = stringResource(id = R.string.points, score.value),
                             fontFamily = Rowdies,
                         )
                         Spacer(modifier = Modifier.height(8.dp))

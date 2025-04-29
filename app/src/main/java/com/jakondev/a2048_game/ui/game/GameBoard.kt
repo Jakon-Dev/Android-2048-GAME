@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,24 +24,29 @@ fun GameBoard(board: Array<IntArray>, width: Dp, height: Dp) {
 
     Log.d("GameBoard", "Rows: $rows, Columns: $columns")
 
-    val boardPadding = width * 0.02f
+    val boardPadding = width * 0.04f
     val cellSpacing = width * 0.02f
 
     Log.d("GameBoard", "Board Padding: $boardPadding, Cell Spacing: $cellSpacing")
 
-    val availableWidth = width - (boardPadding * 2) - (cellSpacing * (columns + 3))
-    val availableHeight = height - (boardPadding * 2) - (cellSpacing * (rows + 3))
+    val availableWidth = width - (boardPadding * 2) - (cellSpacing * (columns - 1))
+    val availableHeight = height - (boardPadding * 2) - (cellSpacing * (rows - 1))
 
     Log.d("GameBoard", "Available Width: $availableWidth, Available Height: $availableHeight")
 
     val cellWidth = availableWidth / columns
     val cellHeight = availableHeight / rows
 
+    val cornerRadius = height * 0.025f
+
     Column(
         modifier = Modifier
             .width(width)
             .height(height)
-            .background(getPalette().secondary)
+            .background(
+                color = getPalette().secondary,
+                shape = RoundedCornerShape(cornerRadius)
+            )
             .padding(boardPadding),
         verticalArrangement = Arrangement.spacedBy(cellSpacing),
         horizontalAlignment = Alignment.CenterHorizontally

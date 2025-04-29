@@ -21,7 +21,10 @@ import com.jakondev.a2048_game.util.StylizedButton
 fun MainMenu(
     time: Int,
     onNewGame: () -> Unit,
-    onResumeGame: () -> Unit
+    onResumeGame: () -> Unit,
+    onShop: () -> Unit,
+    onAchievements: () -> Unit,
+    onSettings: () -> Unit,
 ) {
     val isLandscape = Resources.getSystem().configuration.orientation == 0
 
@@ -37,7 +40,7 @@ fun MainMenu(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1.5f))
 
             Text(
                 text = "2048",
@@ -88,12 +91,51 @@ fun MainMenu(
                     buttonHeight = 50.dp,
                     size = 40.dp,
                     textSize = 20.sp,
-                    buttonColor = getPalette().secondary,
                 )
 
             }
 
-            Spacer(modifier = Modifier.weight(2f))
+            if (isLandscape) {
+                Spacer(modifier = Modifier.weight(1.8f))
+            } else {
+                Spacer(modifier = Modifier.weight(1.5f))
+            }
+
+            Row(
+            ) {
+                Spacer(modifier = Modifier.weight(2f))
+                StylizedButton(
+                    text = "S",
+                    onClick = onShop,
+                    buttonWidth = 50.dp,
+                    buttonHeight = 50.dp,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                StylizedButton(
+                    text = "A",
+                    onClick = onAchievements,
+                    buttonWidth = 50.dp,
+                    buttonHeight = 50.dp,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                StylizedButton(
+                    text = "C",
+                    onClick = onSettings,
+                    buttonWidth = 50.dp,
+                    buttonHeight = 50.dp,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                )
+                Spacer(modifier = Modifier.weight(2f))
+            }
+
+
+
+            Spacer(modifier = Modifier.weight(0.5f))
         }
 
     }

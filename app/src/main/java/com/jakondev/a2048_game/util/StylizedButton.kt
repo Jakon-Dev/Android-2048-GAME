@@ -117,3 +117,17 @@ fun StylizedButton(
         }
     }
 }
+
+@Composable
+fun BackStylizedButton(
+    onClick: () -> Unit
+){
+    StylizedButton(
+        text = "←", //TODO, Copiar un icono mejor para volver (estoy en medio apagón 28/04/2025 y no tengo internet por si alguien lo lee)
+        onClick = onClick,
+        buttonWidth = 50.dp,
+        buttonHeight = 50.dp,
+        size = 40.dp,
+        textSize = 30.sp,
+    )
+}

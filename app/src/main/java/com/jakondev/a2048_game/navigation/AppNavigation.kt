@@ -5,6 +5,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jakondev.a2048_game.ui.achievements.AchievementsMenu
+import com.jakondev.a2048_game.ui.settings.SettingsMenu
+import com.jakondev.a2048_game.ui.shop.ShopMenu
 import com.jakondev.game2048.GameViewModel
 import com.jakondev.game2048.ui.GameScreen
 
@@ -24,11 +27,44 @@ fun AppNavigation(viewModel: GameViewModel) {
                 onResumeGame = {
                     viewModel.resumeTimer()
                     navController.navigate("game")
+                },
+                onShop = {
+                    navController.navigate("shop")
+                },
+                onAchievements = {
+                    navController.navigate("achievements")
+                },
+                onSettings = {
+                    navController.navigate("settings")
                 }
             )
         }
         composable("game") {
             GameScreen(viewModel, navController)
+        }
+        composable("shop"){
+            ShopMenu(
+                viewModel = viewModel,
+                onMenu = {
+                    navController.navigate("menu")
+                }
+            )
+        }
+        composable("achievements"){
+            AchievementsMenu(
+                viewModel = viewModel,
+                onMenu = {
+                    navController.navigate("menu")
+                }
+            )
+        }
+        composable("settings"){
+            SettingsMenu(
+                viewModel = viewModel,
+                onMenu = {
+                    navController.navigate("menu")
+                }
+            )
         }
     }
 }

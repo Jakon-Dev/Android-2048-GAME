@@ -65,7 +65,7 @@ fun DirectionControls(
                 StylizedButton(
                     text = "→",
                     onClick = onRight,
-                    size = buttonSize
+                    size = buttonSize,
                 )
             }
         }
