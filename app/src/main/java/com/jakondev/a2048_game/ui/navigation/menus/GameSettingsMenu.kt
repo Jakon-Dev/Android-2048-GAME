@@ -1,0 +1,141 @@
+package com.jakondev.a2048_game.ui.navigation.menus
+
+import android.content.res.Configuration
+import android.content.res.Resources
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.game2048.R
+import com.jakondev.a2048_game.ui.theme.main.Rowdies
+import com.jakondev.a2048_game.ui.theme.main.getPalette
+import com.jakondev.a2048_game.util.BackStylizedButton
+import com.jakondev.a2048_game.util.StylizedButton
+import com.jakondev.a2048_game.viewmodel.GameViewModel
+
+
+@Composable
+fun GameSettingsMenu(
+    viewModel: GameViewModel,
+    navController: NavHostController,
+) {
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val palette = getPalette()
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = palette.background
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BackStylizedButton(onClick = { navController.navigate("menu") })
+            }
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.weight(0.2f))
+
+                Text(
+                    text = stringResource(id = R.string.gamemodes),
+                    fontSize = 40.sp,
+                    fontFamily = Rowdies,
+                    fontWeight = FontWeight.Bold,
+                    color = palette.tertiary,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+
+                Spacer(modifier = Modifier.weight(0.3f))
+
+                StylizedButton(
+                    text = stringResource(id = R.string.classic_mode),
+                    buttonWidth = 200.dp,
+                    buttonHeight = 50.dp,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                    onClick = {
+                        viewModel.setGameMode(GameViewModel.GameMode.CLASSIC)
+                        viewModel.resetGame()
+                        navController.navigate("game")
+                    }
+                )
+
+                Spacer(modifier = Modifier.weight(0.2f))
+
+                StylizedButton(
+                    text = stringResource(id = R.string.mode_15_min),
+                    buttonWidth = 200.dp,
+                    buttonHeight = 50.dp,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                    onClick = {
+                        viewModel.setGameMode(GameViewModel.GameMode.COUNTDOWN_15)
+                        viewModel.resetGame()
+                        navController.navigate("game")
+                    }
+                )
+
+                Spacer(modifier = Modifier.weight(0.05f))
+
+                StylizedButton(
+                    text = stringResource(id = R.string.mode_20_min),
+                    buttonWidth = 200.dp,
+                    buttonHeight = 50.dp,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                    onClick = {
+                        viewModel.setGameMode(GameViewModel.GameMode.COUNTDOWN_20)
+                        viewModel.resetGame()
+                        navController.navigate("game")
+                    }
+                )
+
+                Spacer(modifier = Modifier.weight(0.05f))
+
+                StylizedButton(
+                    text = stringResource(id = R.string.mode_30_min),
+                    buttonWidth = 200.dp,
+                    buttonHeight = 50.dp,
+                    size = 40.dp,
+                    textSize = 20.sp,
+                    onClick = {
+                        viewModel.setGameMode(GameViewModel.GameMode.COUNTDOWN_30)
+                        viewModel.resetGame()
+                        navController.navigate("game")
+                    }
+                )
+
+                Spacer(modifier = Modifier.weight(2f))
+            }
+        }
+    }
+}
+
+

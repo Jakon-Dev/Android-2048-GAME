@@ -67,7 +67,7 @@ fun InfoMenu(
                     // Título
                     Text(
                         text = stringResource(id = R.string.info),
-                        fontSize = 48.sp,
+                        fontSize = 40.sp,
                         fontFamily = Rowdies,
                         fontWeight = FontWeight.Bold,
                         color = getPalette().tertiary,

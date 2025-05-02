@@ -8,7 +8,7 @@
     <string name="game_over">¡Has Perdido!</string>
     <string name="final_points_message">Tus puntos finales han sido: %1$d</string>
     <string name="retry">Reintentar</string>
-    <string name="final_time_message">Tiempo jugado: %1$s</string>
+    <string name="time_played">Tiempo jugado: %1$s</string>
     <string name="you_win">¡Has Ganado!</string>
     <string name="win_message">¡Has logrado el objetivo 2048!</string>
     <string name="settings">Configuración</string>
@@ -27,4 +27,12 @@
     <string name="tutorial_endgame_title">Fin del juego</string>
     <string name="tutorial_endgame_info">El juego termina cuando no quedan movimientos posibles.</string>
     <string name="tutorial_objective_info">Combina los números hasta alcanzar el bloque 2048.</string>
+    <string name="game_over_timeout">¡Se ha terminado el tiempo!</string>
+    <string name="game_over_no_moves">¡Ya no quedan movimientos!</string>
+    <string name="gamemodes">Modos de juego</string>
+    <string name="classic_mode">Modo clásico</string>
+    <string name="mode_15_min">15 Minutos</string>
+    <string name="mode_20_min">20 Minutos</string>
+    <string name="mode_30_min">30 Minutos</string>
+    <string name="time_remaining">Tiempo restante: %1$s</string>
 </resources>

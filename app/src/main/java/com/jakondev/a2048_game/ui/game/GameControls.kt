@@ -118,7 +118,7 @@ private fun StatsSection(score: Int, time: String) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = stringResource(id = R.string.final_time_message, time),
+            text = stringResource(id = R.string.time_played, time),
             fontSize = MaterialTheme.typography.headlineSmall.fontSize,
             fontFamily = Rowdies,
             color = getPalette().onBackground,

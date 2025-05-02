@@ -8,7 +8,7 @@
     <string name="game_over">Has Perdut!</string>
     <string name="final_points_message">La teva puntuació final ha estat: %1$d</string>
     <string name="retry">Reintentar</string>
-    <string name="final_time_message">Temps jugat: %1$s</string>
+    <string name="time_played">Temps jugat: %1$s</string>
     <string name="you_win">Has Guanyat!</string>
     <string name="win_message">Has conseguit l\'objectiu 2048!</string>
     <string name="settings">Configuració</string>
@@ -27,4 +27,12 @@
     <string name="tutorial_endgame_title">Fi del joc</string>
     <string name="tutorial_endgame_info">El joc acaba cuan no queden moviments possibles.</string>
     <string name="tutorial_objective_info">Combina els nombres fins conseguir el 2048.</string>
+    <string name="game_over_timeout">S\'ha acabat el temps!</string>
+    <string name="game_over_no_moves">Ja no queden moviments!</string>
+    <string name="gamemodes">Mode de joc</string>
+    <string name="classic_mode">Mode clàssic</string>
+    <string name="mode_15_min">15 Minuts</string>
+    <string name="mode_20_min">20 Minuts</string>
+    <string name="mode_30_min">30 Minuts</string>
+    <string name="time_remaining">Temps restant: %1$s</string>
 </resources>

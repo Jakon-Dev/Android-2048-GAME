@@ -10,6 +10,7 @@ import com.jakondev.a2048_game.ui.navigation.menus.SettingsMenu
 import com.jakondev.a2048_game.ui.navigation.menus.ShopMenu
 import com.jakondev.a2048_game.viewmodel.GameViewModel
 import com.jakondev.a2048_game.ui.game.GameScreen
+import com.jakondev.a2048_game.ui.navigation.menus.GameSettingsMenu
 import com.jakondev.a2048_game.ui.navigation.menus.InfoMenu
 
 @Composable
@@ -24,6 +25,9 @@ fun AppNavigation(viewModel: GameViewModel) {
                 viewModel = viewModel,
                 navController = navController
             )
+        }
+        composable("game_settings") {
+            GameSettingsMenu(viewModel = viewModel, navController = navController)
         }
         composable("game") {
             GameScreen(viewModel = viewModel, navController = navController)

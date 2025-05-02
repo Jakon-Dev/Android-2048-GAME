@@ -31,6 +31,7 @@ import com.jakondev.a2048_game.viewmodel.GameViewModel
 fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     val board = viewModel.board.collectAsState()
     val score = viewModel.score.collectAsState()
+    val gameMode = viewModel.currentMode.collectAsState()
     val time = viewModel.time.collectAsState()
     val isGameOver = viewModel.isGameOver.collectAsState()
     val is2048 = viewModel.is2048.collectAsState()
@@ -41,6 +42,10 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     val spacing = screenSize.width * 0.02f
     val padding = screenSize.width * 0.04f
     val boardSize = if (isLandscape) screenSize.width * 0.3f else screenSize.height * 0.35f
+
+    val gameOverReason = viewModel.gameOverReason.collectAsState()
+
+
 
     Box(
         modifier = Modifier
@@ -64,9 +69,10 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
             VictoryDialog(score.value, time.value, viewModel, navController)
         }
 
+
         if (isGameOver.value) {
             viewModel.pauseTimer()
-            GameOverDialog(score.value, time.value, viewModel, navController)
+            GameOverDialog(score.value, time.value, viewModel, navController, gameOverReason.value)
         }
     }
 }
@@ -97,7 +103,7 @@ private fun BoardLayout(
             verticalArrangement = Arrangement.spacedBy(spacing),
             modifier = Modifier.fillMaxSize()
         ) {
-            StatsDisplay(score, formatTime(time))
+            StatsDisplay(score, formatTime(time), viewModel)
             GameBoard(board, width = boardSize, height = boardSize)
             GameControls(score, time, viewModel, navController, isLandscape)
         }
@@ -122,7 +128,7 @@ private fun VictoryDialog(score: Int, time: Int, viewModel: GameViewModel, navCo
                 Text(text = stringResource(R.string.win_message), fontFamily = Rowdies)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = stringResource(R.string.final_points_message, score), fontFamily = Rowdies)
-                Text(text = stringResource(R.string.final_time_message, formatTime(time)), fontFamily = Rowdies)
+                Text(text = stringResource(R.string.time_played, formatTime(time)), fontFamily = Rowdies)
             }
         },
         confirmButton = {
@@ -143,8 +149,20 @@ private fun VictoryDialog(score: Int, time: Int, viewModel: GameViewModel, navCo
 }
 
 @Composable
-private fun GameOverDialog(score: Int, time: Int, viewModel: GameViewModel, navController: NavController) {
-    val context = LocalContext.current
+private fun GameOverDialog(
+    score: Int,
+    time: Int,
+    viewModel: GameViewModel,
+    navController: NavController,
+    reason: String
+) {
+
+    val gameOverMessage = when (reason) {
+        "timeout" -> stringResource(R.string.game_over_timeout)
+        "no_moves" -> stringResource(R.string.game_over_no_moves)
+        else -> stringResource(R.string.game_over)
+    }
+
     AlertDialog(
         containerColor = getPalette().background,
         onDismissRequest = {},
@@ -157,9 +175,13 @@ private fun GameOverDialog(score: Int, time: Int, viewModel: GameViewModel, navC
         },
         text = {
             Column {
+                Text(text = gameOverMessage, fontFamily = Rowdies, fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(text = stringResource(R.string.points, score), fontFamily = Rowdies)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = stringResource(R.string.final_time_message, formatTime(time)), fontFamily = Rowdies)
+                if (reason != "timeout") {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = stringResource(R.string.time_played, formatTime(time)), fontFamily = Rowdies)
+                }
             }
         },
         confirmButton = {
@@ -218,25 +240,30 @@ private fun SharedDialogButtons(
 }
 
 @Composable
-fun StatsDisplay(score: Int, time: String) {
+fun StatsDisplay(score: Int, time: String, viewModel: GameViewModel) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         ScoreDisplay(score)
-        TimeDisplay(time)
+        TimeDisplay(time, viewModel)
     }
 }
 
 @Composable
-fun TimeDisplay(time: String) {
+fun TimeDisplay(time: String, viewModel: GameViewModel) {
+    val displayText = if (viewModel.currentMode.value == GameViewModel.GameMode.CLASSIC) {
+        stringResource(id = R.string.time_played, time)
+    } else {
+        stringResource(id = R.string.time_remaining, time)
+    }
+
     Text(
-        text = stringResource(id = R.string.final_time_message, time),
+        text = displayText,
         fontSize = MaterialTheme.typography.headlineSmall.fontSize,
         fontFamily = Rowdies,
         color = getPalette().onBackground,
-        modifier = Modifier
-            .padding(bottom = 8.dp)
+        modifier = Modifier.padding(bottom = 8.dp)
     )
 }
 
@@ -255,6 +282,6 @@ fun ScoreDisplay(score: Int) {
 
 fun formatTime(seconds: Int): String {
     val minutes = seconds / 60
-    val remaining = seconds % 60
-    return String.format("%02d:%02d", minutes, remaining)
+    val remainingSeconds = seconds % 60
+    return "%02d:%02d".format(minutes, remainingSeconds)
 }

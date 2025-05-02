@@ -99,8 +99,7 @@ fun MainMenu(
             StylizedButton(
                 text = stringResource(id = R.string.start_new_game),
                 onClick = {
-                    viewModel.resetGame()
-                    navController.navigate("game")
+                    navController.navigate("game_settings")
                 },
                 buttonWidth = 200.dp,
                 buttonHeight = 50.dp,

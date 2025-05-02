@@ -36,6 +36,8 @@ class GameViewModel : ViewModel() {
     private val _time = MutableStateFlow(0)
     val time: StateFlow<Int> = _time.asStateFlow()
 
+    val gameOverReason = MutableStateFlow<String>("timeout")
+
     // -------------------------
     // TEMPORIZADOR
     // -------------------------
@@ -45,13 +47,25 @@ class GameViewModel : ViewModel() {
     fun startTimer() {
         if (isTimeRunning) return
         isTimeRunning = true
+
         timerJob = viewModelScope.launch {
             while (isTimeRunning) {
                 delay(1000L)
-                _time.value += 1
+
+                if (currentMode.value == GameMode.CLASSIC) {
+                    _time.value += 1
+                } else {
+                    if (_time.value > 0) {
+                        _time.value -= 1
+                    } else {
+                        isTimeRunning = false
+                        _isGameOver.value = true
+                    }
+                }
             }
         }
     }
+
 
     fun pauseTimer() {
         isTimeRunning = false
@@ -63,8 +77,27 @@ class GameViewModel : ViewModel() {
     }
 
     // -------------------------
+    // MODOS DE JUEGO
+    // -------------------------
+
+    var currentMode = MutableStateFlow(GameMode.CLASSIC)
+
+    enum class GameMode {
+        CLASSIC,
+        COUNTDOWN_15,
+        COUNTDOWN_20,
+        COUNTDOWN_30
+    }
+
+    fun setGameMode(mode: GameMode) {
+        currentMode.value = mode
+    }
+
+
+    // -------------------------
     // CONTROL DE JUEGO
     // -------------------------
+
     fun resetGame() {
         val newBoard = SampleBoards().almostLost
         repeat(2) { addRandomTile(newBoard) }
@@ -72,10 +105,17 @@ class GameViewModel : ViewModel() {
         _prevBoard.value = newBoard.map { it.clone() }.toTypedArray()
         _score.value = 0
         _swipes.value = 0
-        _time.value = 0
         _isGameOver.value = false
         _is2048.value = false
         _hasWon.value = false
+
+        when (currentMode.value) {
+            GameMode.COUNTDOWN_15 -> _time.value = 15
+            GameMode.COUNTDOWN_20 -> _time.value = 20 * 60
+            GameMode.COUNTDOWN_30 -> _time.value = 30 * 60
+            else -> _time.value = 0
+        }
+
         startTimer()
     }
 
@@ -139,16 +179,21 @@ class GameViewModel : ViewModel() {
 
     private fun applyMove(newBoard: Array<IntArray>) {
         if (!boardEquals(newBoard, _board.value)) {
+            _prevBoard.value = _board.value.map { it.clone() }.toTypedArray() // move this here
             addRandomTile(newBoard)
             incrementSwipes()
         }
         _board.value = newBoard
         _isGameOver.value = !canMakeMove(newBoard)
+        if (_isGameOver.value) {
+            gameOverReason.value = if (_swipes.value == 0) "no_moves" else "timeout"
+        }
     }
 
     // -------------------------
     // LÓGICA DEL JUEGO
     // -------------------------
+
     private fun merge(row: IntArray): IntArray {
         val compacted = row.filter { it != 0 }.toMutableList()
         var i = 0

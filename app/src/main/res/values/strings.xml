@@ -8,7 +8,7 @@
     <string name="game_over">Game Over!</string>
     <string name="final_points_message">Your final points are: %1$d</string>
     <string name="retry">Retry</string>
-    <string name="final_time_message">Time played: %1$s</string>
+    <string name="time_played">Time played: %1$s</string>
     <string name="you_win">You Win!</string>
     <string name="win_message">You have reached the 2048 objective!</string>
     <string name="settings">Settings</string>
@@ -27,5 +27,13 @@
     <string name="tutorial_combination_info">When two blocks with the same number touch, they will join into one.</string>
     <string name="tutorial_endgame_title">End of the game</string>
     <string name="tutorial_endgame_info">The game ends when there are no more possible moves.</string>
+    <string name="game_over_timeout">You ran out of time!</string>
+    <string name="game_over_no_moves">You got no more moves!</string>
+    <string name="gamemodes">Game modes</string>
+    <string name="classic_mode">Classic mode</string>
+    <string name="mode_15_min">15 Minutes</string>
+    <string name="mode_20_min">20 Minutes</string>
+    <string name="mode_30_min">30 Minutes</string>
+    <string name="time_remaining">Time remaining: %1$s</string>
 
 </resources>
