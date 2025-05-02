@@ -1,20 +1,25 @@
 package com.jakondev.a2048_game.viewmodel
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.random.Random
 
+val COLUMNS = 4
+val ROWS = 4
+
 class GameViewModel : ViewModel() {
 
     // -------------------------
     // ESTADO DEL JUEGO
     // -------------------------
-    private val _board = MutableStateFlow(Array(4) { IntArray(4) })
+    private val _board = MutableStateFlow(Array(ROWS) { IntArray(COLUMNS) })
     val board: StateFlow<Array<IntArray>> = _board.asStateFlow()
 
-    private val _prevBoard = MutableStateFlow(Array(4) { IntArray(4) })
+    private val _prevBoard = MutableStateFlow(Array(ROWS) { IntArray(COLUMNS) })
     private val _canGoBack = MutableStateFlow(true)
     val canGoBack: StateFlow<Boolean> = _canGoBack
 
@@ -41,12 +46,14 @@ class GameViewModel : ViewModel() {
     // -------------------------
     // TEMPORIZADOR
     // -------------------------
+
     private var isTimeRunning = false
     private var timerJob: Job? = null
 
     fun startTimer() {
         if (isTimeRunning) return
         isTimeRunning = true
+        Log.d(TAG, "Timer started with mode: ${currentMode.value}")
 
         timerJob = viewModelScope.launch {
             while (isTimeRunning) {
@@ -54,12 +61,19 @@ class GameViewModel : ViewModel() {
 
                 if (currentMode.value == GameMode.CLASSIC) {
                     _time.value += 1
+                    if (_time.value % 5 == 0) {
+                        Log.d(TAG, "Classic mode time: ${_time.value}s")
+                    }
                 } else {
                     if (_time.value > 0) {
                         _time.value -= 1
+                        if (_time.value % 5 == 0) {
+                            Log.d(TAG, "Countdown time: ${_time.value}s")
+                        }
                     } else {
                         isTimeRunning = false
                         _isGameOver.value = true
+                        Log.d(TAG, "Game Over due to timeout")
                     }
                 }
             }
@@ -67,13 +81,19 @@ class GameViewModel : ViewModel() {
     }
 
 
+
     fun pauseTimer() {
         isTimeRunning = false
+        Log.d(TAG, "Timer paused")
         timerJob?.cancel()
     }
 
     fun resumeTimer() {
-        if (!isTimeRunning) startTimer()
+        if (!isTimeRunning){
+            startTimer()
+            Log.d(TAG, "Timer resumed")
+        }
+
     }
 
     // -------------------------
@@ -99,7 +119,7 @@ class GameViewModel : ViewModel() {
     // -------------------------
 
     fun resetGame() {
-        val newBoard = SampleBoards().almostLost
+        val newBoard = SampleBoards().empty
         repeat(2) { addRandomTile(newBoard) }
         _board.value = newBoard
         _prevBoard.value = newBoard.map { it.clone() }.toTypedArray()
@@ -110,7 +130,7 @@ class GameViewModel : ViewModel() {
         _hasWon.value = false
 
         when (currentMode.value) {
-            GameMode.COUNTDOWN_15 -> _time.value = 15
+            GameMode.COUNTDOWN_15 -> _time.value = 15 * 60
             GameMode.COUNTDOWN_20 -> _time.value = 20 * 60
             GameMode.COUNTDOWN_30 -> _time.value = 30 * 60
             else -> _time.value = 0
@@ -149,16 +169,33 @@ class GameViewModel : ViewModel() {
     // -------------------------
     // MOVIMIENTOS
     // -------------------------
-    fun moveLeft() = moveRows { merge(it) }
-    fun moveRight() = moveRows { merge(it.reversedArray()).reversedArray() }
-    fun moveUp() = moveColumns { merge(it) }
-    fun moveDown() = moveColumns { merge(it.reversedArray()).reversedArray() }
+
+    fun moveLeft() {
+        Log.d(TAG, "Move: LEFT")
+        moveRows { merge(it) }
+    }
+
+    fun moveRight() {
+        Log.d(TAG, "Move: RIGHT")
+        moveRows { merge(it.reversedArray()).reversedArray() }
+    }
+
+    fun moveUp() {
+        Log.d(TAG, "Move: UP")
+        moveColumns { merge(it) }
+    }
+
+    fun moveDown() {
+        Log.d(TAG, "Move: DOWN")
+        moveColumns { merge(it.reversedArray()).reversedArray() }
+    }
+
 
     private fun moveRows(transform: (IntArray) -> IntArray) {
         val current = _board.value
         _prevBoard.value = current.map { it.clone() }.toTypedArray()
 
-        val newBoard = Array(4) { row -> transform(current[row]) }
+        val newBoard = Array(ROWS) { row -> transform(current[row]) }
         applyMove(newBoard)
     }
 
@@ -166,12 +203,12 @@ class GameViewModel : ViewModel() {
         val current = _board.value
         _prevBoard.value = current.map { it.clone() }.toTypedArray()
 
-        val newBoard = Array(4) { IntArray(4) }
+        val newBoard = Array(ROWS) { IntArray(COLUMNS) }
 
-        for (j in 0..3) {
-            val column = IntArray(4) { i -> current[i][j] }
+        for (j in 0 until COLUMNS) {
+            val column = IntArray(ROWS) { i -> current[i][j] }
             val transformed = transform(column)
-            for (i in 0..3) newBoard[i][j] = transformed[i]
+            for (i in 0 until ROWS) newBoard[i][j] = transformed[i]
         }
 
         applyMove(newBoard)
@@ -179,14 +216,16 @@ class GameViewModel : ViewModel() {
 
     private fun applyMove(newBoard: Array<IntArray>) {
         if (!boardEquals(newBoard, _board.value)) {
-            _prevBoard.value = _board.value.map { it.clone() }.toTypedArray() // move this here
+            _prevBoard.value = _board.value.map { it.clone() }.toTypedArray()
             addRandomTile(newBoard)
             incrementSwipes()
         }
         _board.value = newBoard
         _isGameOver.value = !canMakeMove(newBoard)
+
         if (_isGameOver.value) {
             gameOverReason.value = if (_swipes.value == 0) "no_moves" else "timeout"
+            Log.d(TAG, "Game Over! Reason: ${gameOverReason.value}")
         }
     }
 
@@ -203,9 +242,11 @@ class GameViewModel : ViewModel() {
             if (compacted[i] == compacted[i + 1]) {
                 compacted[i] *= 2
                 gained += compacted[i]
+                Log.d(TAG, "Merged tiles to ${compacted[i]}")
                 if (compacted[i] == 2048 && !_hasWon.value) {
                     _is2048.value = true
                     _hasWon.value = true
+                    Log.d(TAG, "2048 tile achieved!")
                 }
                 compacted.removeAt(i + 1)
             }
@@ -213,13 +254,16 @@ class GameViewModel : ViewModel() {
         }
 
         _score.value += gained
-        return compacted.toIntArray().copyOf(4)
+        if (gained > 0){
+            Log.d(TAG, "Score increased by $gained. Total: ${_score.value}")
+        }
+        return compacted.toIntArray().copyOf(COLUMNS)
     }
 
     private fun addRandomTile(board: Array<IntArray>) {
         val emptySpots = buildList {
-            for (i in 0..3) {
-                for (j in 0..3) {
+            for (i in 0 until ROWS) {
+                for (j in 0 until COLUMNS) {
                     if (board[i][j] == 0) add(i to j)
                 }
             }
