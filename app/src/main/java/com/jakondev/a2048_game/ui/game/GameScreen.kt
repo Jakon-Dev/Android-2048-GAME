@@ -178,7 +178,7 @@ private fun GameOverDialog(
                 Text(text = gameOverMessage, fontFamily = Rowdies, fontSize = 18.sp)
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(text = stringResource(R.string.points, score), fontFamily = Rowdies)
-                if (reason != "timeout") {
+                if (reason.equals("timeout")) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = stringResource(R.string.time_played, formatTime(time)), fontFamily = Rowdies)
                 }
