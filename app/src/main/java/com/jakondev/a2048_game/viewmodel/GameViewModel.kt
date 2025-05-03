@@ -8,10 +8,11 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.random.Random
 
-val COLUMNS = 4
-val ROWS = 4
 
 class GameViewModel : ViewModel() {
+
+    val COLUMNS = 4
+    val ROWS = 4
 
     // -------------------------
     // ESTADO DEL JUEGO
