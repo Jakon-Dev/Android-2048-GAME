@@ -74,6 +74,7 @@ class GameViewModel : ViewModel() {
                     } else {
                         isTimeRunning = false
                         _isGameOver.value = true
+                        gameOverReason.value = "timeout"
                         Log.d(TAG, "Game Over due to timeout")
                     }
                 }
@@ -222,10 +223,9 @@ class GameViewModel : ViewModel() {
             incrementSwipes()
         }
         _board.value = newBoard
-        _isGameOver.value = !canMakeMove(newBoard)
-
-        if (_isGameOver.value) {
-            gameOverReason.value = if (_swipes.value == 0) "no_moves" else "timeout"
+        if (!canMakeMove(newBoard)) {
+            _isGameOver.value = true
+            gameOverReason.value = "no_moves"
             Log.d(TAG, "Game Over! Reason: ${gameOverReason.value}")
         }
     }
