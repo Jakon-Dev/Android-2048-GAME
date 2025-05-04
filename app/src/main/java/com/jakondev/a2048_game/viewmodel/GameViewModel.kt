@@ -74,6 +74,7 @@ class GameViewModel : ViewModel() {
                     } else {
                         isTimeRunning = false
                         _isGameOver.value = true
+                        playSoundEffect(SoundEvent.Lose)
                         gameOverReason.value = "timeout"
                         Log.d(TAG, "Game Over due to timeout")
                     }
@@ -99,6 +100,26 @@ class GameViewModel : ViewModel() {
     }
 
     // -------------------------
+    // EFECTOS DE SONIDO
+    // -------------------------
+
+    private val _playSound = MutableSharedFlow<SoundEvent>()
+    val playSound: SharedFlow<SoundEvent> = _playSound
+
+    sealed class SoundEvent {
+        object Win : SoundEvent()
+        object Lose : SoundEvent()
+        object Button : SoundEvent()
+        object Pop : SoundEvent()
+    }
+
+    fun playSoundEffect(event: SoundEvent) {
+        viewModelScope.launch {
+            _playSound.emit(event)
+        }
+    }
+
+    // -------------------------
     // MODOS DE JUEGO
     // -------------------------
 
@@ -121,7 +142,7 @@ class GameViewModel : ViewModel() {
     // -------------------------
 
     fun resetGame() {
-        val newBoard = SampleBoards().almostLost
+        val newBoard = SampleBoards().almostWon
         repeat(2) { addRandomTile(newBoard) }
         _board.value = newBoard
         _prevBoard.value = newBoard.map { it.clone() }.toTypedArray()
@@ -226,6 +247,7 @@ class GameViewModel : ViewModel() {
         if (!canMakeMove(newBoard)) {
             _isGameOver.value = true
             gameOverReason.value = "no_moves"
+            playSoundEffect(SoundEvent.Lose)
             Log.d(TAG, "Game Over! Reason: ${gameOverReason.value}")
         }
     }
@@ -242,11 +264,13 @@ class GameViewModel : ViewModel() {
         while (i < compacted.size - 1) {
             if (compacted[i] == compacted[i + 1]) {
                 compacted[i] *= 2
+                playSoundEffect(SoundEvent.Pop)
                 gained += compacted[i]
                 Log.d(TAG, "Merged tiles to ${compacted[i]}")
                 if (compacted[i] == 2048 && !_hasWon.value) {
                     _is2048.value = true
                     _hasWon.value = true
+                    playSoundEffect(SoundEvent.Win)
                     Log.d(TAG, "2048 tile achieved!")
                 }
                 compacted.removeAt(i + 1)
@@ -290,4 +314,5 @@ class GameViewModel : ViewModel() {
         }
         return false
     }
+
 }

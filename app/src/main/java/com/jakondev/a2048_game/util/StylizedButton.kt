@@ -1,6 +1,5 @@
 package com.jakondev.a2048_game.util
 
-import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -33,9 +32,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.game2048.R
 import com.jakondev.a2048_game.ui.theme.main.Rowdies
 import com.jakondev.a2048_game.ui.theme.main.getPalette
+import com.jakondev.a2048_game.viewmodel.GameViewModel
 
 @Composable
 fun StylizedButton(

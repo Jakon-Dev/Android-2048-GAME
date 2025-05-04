@@ -3,6 +3,7 @@ package com.jakondev.a2048_game.ui.game
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.Configuration
+import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +42,8 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
     val isGameOver = viewModel.isGameOver.collectAsState()
     val is2048 = viewModel.is2048.collectAsState()
 
+    val context = LocalContext.current
+
     val configuration = LocalConfiguration.current
     val screenSize = rememberScreenSize()
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -49,6 +53,22 @@ fun GameScreen(viewModel: GameViewModel, navController: NavController) {
 
     val gameOverReason = viewModel.gameOverReason.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.playSound.collect { event ->
+            val resId = when (event) {
+                is GameViewModel.SoundEvent.Win -> R.raw.win
+                is GameViewModel.SoundEvent.Lose -> R.raw.lose
+                is GameViewModel.SoundEvent.Button -> R.raw.button
+                is GameViewModel.SoundEvent.Pop -> R.raw.pop
+            }
+
+            val mediaPlayer = MediaPlayer.create(context, resId)
+            mediaPlayer.setOnCompletionListener {
+                it.release()
+            }
+            mediaPlayer.start()
+        }
+    }
 
 
     Box(
