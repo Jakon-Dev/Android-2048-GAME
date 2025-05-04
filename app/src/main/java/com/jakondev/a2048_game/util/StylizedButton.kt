@@ -1,5 +1,6 @@
 package com.jakondev.a2048_game.util
 
+import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -23,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.game2048.R
 import com.jakondev.a2048_game.ui.theme.main.Rowdies
 import com.jakondev.a2048_game.ui.theme.main.getPalette
 
@@ -47,6 +51,7 @@ fun StylizedButton(
     buttonColor: androidx.compose.ui.graphics.Color = getPalette().surface,
     outlineColor: androidx.compose.ui.graphics.Color = getPalette().tertiary,
     icon: @Composable (() -> Unit)? = null,
+    textColor: androidx.compose.ui.graphics.Color = getPalette().tertiary
 ) {
     var pressed by remember { mutableStateOf(false) }
 
@@ -118,7 +123,7 @@ fun StylizedButton(
                         fontSize = textSize,
                         fontFamily = Rowdies,
                         fontWeight = FontWeight.Bold,
-                        color = outlineColor
+                        color = textColor
                     )
                 }
             }
@@ -144,3 +149,25 @@ fun BackStylizedButton(
         }
     )
 }
+
+@Composable
+fun exitButton(
+    width: Dp = 100.dp,
+    height: Dp = 50.dp,
+    textSize: TextUnit = 18.sp
+) {
+    val activity = getActivity()
+    StylizedButton(
+        text = stringResource(R.string.exit),
+        onClick = {
+            activity.finishAffinity()
+        },
+        buttonWidth = width,
+        buttonHeight = height,
+        textSize = textSize,
+        textColor = getPalette().onError,
+        buttonColor = getPalette().error,
+    )
+}
+
+

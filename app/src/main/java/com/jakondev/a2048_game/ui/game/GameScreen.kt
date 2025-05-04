@@ -1,6 +1,9 @@
 package com.jakondev.a2048_game.ui.game
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.AlertDialog
@@ -22,6 +25,7 @@ import com.example.game2048.R
 import com.jakondev.a2048_game.ui.theme.main.Rowdies
 import com.jakondev.a2048_game.ui.theme.main.getPalette
 import com.jakondev.a2048_game.util.StylizedButton
+import com.jakondev.a2048_game.util.exitButton
 import com.jakondev.a2048_game.util.rememberScreenSize
 import com.jakondev.a2048_game.util.sendEmail
 import com.jakondev.a2048_game.viewmodel.GameViewModel
@@ -199,43 +203,60 @@ private fun SharedDialogButtons(
 ) {
     val context = LocalContext.current
     Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(8.dp)
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
-        StylizedButton(
-            text = stringResource(R.string.restart),
-            onClick = {
-                viewModel.resetGame()
-                viewModel.resumeTimer()
-            },
-            buttonWidth = 85.dp,
-            buttonHeight = 50.dp,
-            size = 40.dp,
-            textSize = 14.sp
-        )
-        StylizedButton(
-            text = stringResource(R.string.share_via_email),
-            onClick = {
-                val subject = context.getString(R.string.email_subject)
-                val body = context.getString(R.string.email_body, score, formatTime(time))
-                sendEmail(context, subject, body)
-            },
-            buttonWidth = 85.dp,
-            buttonHeight = 50.dp,
-            size = 40.dp,
-            textSize = 14.sp
-        )
-        StylizedButton(
-            text = stringResource(R.string.menu),
-            onClick = {
-                viewModel.pauseTimer()
-                navController.navigate("menu")
-            },
-            buttonWidth = 85.dp,
-            buttonHeight = 50.dp,
-            size = 40.dp,
-            textSize = 14.sp
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            StylizedButton(
+                text = stringResource(R.string.restart),
+                onClick = {
+                    viewModel.resetGame()
+                    viewModel.resumeTimer()
+                },
+                buttonWidth = 120.dp,
+                buttonHeight = 50.dp,
+                size = 40.dp,
+                textSize = 18.sp
+            )
+            StylizedButton(
+                text = stringResource(R.string.share_via_email),
+                onClick = {
+                    val subject = context.getString(R.string.email_subject)
+                    val body = context.getString(R.string.email_body, score, formatTime(time))
+                    sendEmail(context, subject, body)
+                },
+                buttonWidth = 120.dp,
+                buttonHeight = 50.dp,
+                size = 40.dp,
+                textSize = 18.sp
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            StylizedButton(
+                text = stringResource(R.string.menu),
+                onClick = {
+                    viewModel.pauseTimer()
+                    navController.navigate("menu")
+                },
+                buttonWidth = 120.dp,
+                buttonHeight = 50.dp,
+                size = 40.dp,
+                textSize = 18.sp
+            )
+            exitButton(
+                width = 120.dp,
+                height = 50.dp,
+                textSize = 18.sp,
+            )
+        }
     }
 }
 
@@ -250,6 +271,7 @@ fun StatsDisplay(score: Int, time: String, viewModel: GameViewModel) {
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun TimeDisplay(time: String, viewModel: GameViewModel) {
     val displayText = if (viewModel.currentMode.value == GameViewModel.GameMode.CLASSIC) {

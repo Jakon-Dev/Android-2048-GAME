@@ -121,7 +121,7 @@ class GameViewModel : ViewModel() {
     // -------------------------
 
     fun resetGame() {
-        val newBoard = SampleBoards().empty
+        val newBoard = SampleBoards().almostLost
         repeat(2) { addRandomTile(newBoard) }
         _board.value = newBoard
         _prevBoard.value = newBoard.map { it.clone() }.toTypedArray()

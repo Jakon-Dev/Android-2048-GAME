@@ -35,5 +35,6 @@
     <string name="mode_20_min">20 Minutes</string>
     <string name="mode_30_min">30 Minutes</string>
     <string name="time_remaining">Time remaining: %1$s</string>
+    <string name="exit">Exit</string>
 
 </resources>
