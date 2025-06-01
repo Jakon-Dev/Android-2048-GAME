@@ -36,4 +36,8 @@
     <string name="mode_30_min">30 Minuts</string>
     <string name="time_remaining">Temps restant: %1$s</string>
     <string name="exit">Sortir</string>
+    <string name="match_history">Historial</string>
+    <string name="movements">Moviments: %1$</string>
+    <string name="result">Resultat:</string>
+    <string name="clear_history">Borrar Historial</string>
 </resources>

@@ -130,14 +130,20 @@ fun MainMenuButtons(
                 StylizedButtonConfig(
                     label = stringResource(id = R.string.resume_game),
                     onClick = {
-                        Log.d("MainMenu", "Time value: $time")
                         viewModel.resumeTimer()
                         navController.navigate("game")
                     }
                 )
             )
         }
+        add(
+            StylizedButtonConfig(
+                label = stringResource(id = R.string.match_history),
+                onClick = { navController.navigate("history") }
+            )
+        )
     }
+
 
     if (isLandscape) {
         Row(

@@ -11,6 +11,7 @@ import com.jakondev.a2048_game.ui.navigation.menus.ShopMenu
 import com.jakondev.a2048_game.viewmodel.GameViewModel
 import com.jakondev.a2048_game.ui.game.GameScreen
 import com.jakondev.a2048_game.ui.navigation.menus.GameSettingsMenu
+import com.jakondev.a2048_game.ui.navigation.menus.HistoryScreen
 import com.jakondev.a2048_game.ui.navigation.menus.InfoMenu
 
 @Composable
@@ -43,6 +44,9 @@ fun AppNavigation(viewModel: GameViewModel) {
         }
         composable("info") {
             InfoMenu(navController = navController)
+        }
+        composable("history") {
+            HistoryScreen(navController = navController)
         }
     }
 }

@@ -1,15 +1,20 @@
 package com.jakondev.a2048_game.viewmodel
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jakondev.a2048_game.data.GameDatabase
+import com.jakondev.a2048_game.data.GameRepository
+import com.jakondev.a2048_game.model.GameResult
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.random.Random
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 
-
-class GameViewModel : ViewModel() {
+class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     val COLUMNS = 4
     val ROWS = 4
@@ -44,6 +49,8 @@ class GameViewModel : ViewModel() {
 
     val gameOverReason = MutableStateFlow<String>("timeout")
 
+    private var userAlias = "Player"
+
     // -------------------------
     // TEMPORIZADOR
     // -------------------------
@@ -76,6 +83,7 @@ class GameViewModel : ViewModel() {
                         _isGameOver.value = true
                         playSoundEffect(SoundEvent.Lose)
                         gameOverReason.value = "timeout"
+                        saveCurrentGame(context = getApplication(), reason = "timeout")
                         Log.d(TAG, "Game Over due to timeout")
                     }
                 }
@@ -248,6 +256,7 @@ class GameViewModel : ViewModel() {
             _isGameOver.value = true
             gameOverReason.value = "no_moves"
             playSoundEffect(SoundEvent.Lose)
+            saveCurrentGame(context = getApplication(), reason = "lose")
             Log.d(TAG, "Game Over! Reason: ${gameOverReason.value}")
         }
     }
@@ -271,6 +280,7 @@ class GameViewModel : ViewModel() {
                     _is2048.value = true
                     _hasWon.value = true
                     playSoundEffect(SoundEvent.Win)
+                    saveCurrentGame(context = getApplication(), reason = "win")
                     Log.d(TAG, "2048 tile achieved!")
                 }
                 compacted.removeAt(i + 1)
@@ -314,5 +324,39 @@ class GameViewModel : ViewModel() {
         }
         return false
     }
+
+
+
+    fun setUserAlias(alias: String) {
+        userAlias = alias
+    }
+
+    fun saveCurrentGame(context: Context, reason: String) {
+        val boardState = _board.value.joinToString(separator = "|") { row ->
+            row.joinToString(",")
+        }
+
+        val result = when (reason) {
+            "win" -> "WIN"
+            "timeout" -> "TIMEOUT"
+            else -> "LOSE"
+        }
+
+        val gameResult = GameResult(
+            score = _score.value,
+            time = _time.value,
+            swipes = _swipes.value,
+            board = boardState,
+            result = result,
+            date = System.currentTimeMillis()
+        )
+
+        viewModelScope.launch {
+            val db = GameDatabase.getDatabase(context)
+            val repo = GameRepository(db.gameResultDao())
+            repo.insert(gameResult)
+        }
+    }
+
 
 }
