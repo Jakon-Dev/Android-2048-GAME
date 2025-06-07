@@ -17,7 +17,7 @@
     <string name="achievements">Fites</string>
     <string name="share_via_email">Compartir</string>
     <string name="email_subject">Mira la meva puntuació en 2048!</string>
-    <string name="email_body">Ei! Acabo d\'aconseguir %1$d punts al 2048 i he estat jugant durant %2$s minuts. Intenta guanyar-me!</string>
+    <string name="email_body">Ei, soc el %1$! Acabo d\'aconseguir %2$d punts al 2048 i he estat jugant durant %3$s minuts. Intenta guanyar-me!</string>
     <string name="info">Infomació</string>
     <string name="tutorial_objective_title">Objectiu</string>
     <string name="tutorial_controles_title">Controls</string>
@@ -40,4 +40,24 @@
     <string name="movements">Moviments: %1$</string>
     <string name="result">Resultat:</string>
     <string name="clear_history">Borrar Historial</string>
+    <string name="username">Nom d\'usuari</string>
+    <string name="save">Desa</string>
+    <string name="AC_first_game_title">Primera partida</string>
+    <string name="AC_win_game_title">Victoria</string>
+    <string name="AC_high_score_5000_title">Mestre</string>
+    <string name="AC_high_score_10000_title">Llegenda</string>
+    <string name="AC_move_100_title">Actiu</string>
+    <string name="AC_swipe_undo_title">Estratega</string>
+    <string name="AC_tile_512_title">Poderós</string>
+    <string name="AC_tile_1024_title">Gegant</string>
+    <string name="AC_tile_2048_title">L\'Escollit</string>
+    <string name="AC_first_game_desc">Juga la teva primera partida</string>
+    <string name="AC_win_game_desc">Guanya una partida</string>
+    <string name="AC_high_score_5000_desc">Arriba a 5000 punts</string>
+    <string name="AC_high_score_10000_desc">Arriba a 10000 punts</string>
+    <string name="AC_move_100_desc">Fes 100 moviments en una partida</string>
+    <string name="AC_swipe_undo_desc">Desfés un moviment</string>
+    <string name="AC_tile_512_desc">Crea una casella de 512</string>
+    <string name="AC_tile_1024_desc">Crea una casella de 1024</string>
+    <string name="AC_tile_2048_desc">Crea una casella de 2048</string>
 </resources>

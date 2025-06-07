@@ -1,7 +1,7 @@
 package com.jakondev.a2048_game.ui.navigation.menus
 
+import com.jakondev.a2048_game.model.Achievement
 import android.content.res.Configuration
-import android.content.res.Resources
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,10 +9,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -34,68 +38,148 @@ fun AchievementsMenu(
     navController: NavHostController,
 ) {
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val achievements by viewModel.achievements.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = getPalette().background
-    )
-    {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                BackStylizedButton(
-                    onClick = {
-                        navController.navigate("menu")
-                    }
-                )
-            }
-
+    ) {
+        if (isLandscape) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(32.dp),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Botón de regreso
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    BackStylizedButton { navController.navigate("menu") }
+                }
+
+                Spacer(modifier = Modifier.weight(0.2f))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.achievements),
+                        fontSize = 40.sp,
+                        fontFamily = Rowdies,
+                        fontWeight = FontWeight.Bold,
+                        color = getPalette().tertiary,
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
+
                 Spacer(modifier = Modifier.weight(0.1f))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(achievements) { achievement ->
+                            AchievementStep(achievement)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Botón de regreso
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    BackStylizedButton { navController.navigate("menu") }
+                }
+
+                Spacer(modifier = Modifier.weight(0.2f))
 
                 Text(
                     text = stringResource(id = R.string.achievements),
-                    fontSize = 40.sp,
+                    fontSize = 48.sp,
                     fontFamily = Rowdies,
                     fontWeight = FontWeight.Bold,
                     color = getPalette().tertiary,
                     style = MaterialTheme.typography.headlineMedium
                 )
 
-                Spacer(modifier = Modifier.weight(0.1f))
+                Spacer(modifier = Modifier.weight(0.2f))
 
-                Text(
-                    text = stringResource(id = R.string.coming_soon),
-                    fontSize = 24.sp,
-                    fontFamily = Rowdies,
-                    fontWeight = FontWeight.Light,
-                    color = getPalette().secondary,
-                    style = MaterialTheme.typography.headlineMedium
-                )
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(achievements) { achievement ->
+                        AchievementStep(achievement)
+                    }
+                }
 
                 Spacer(modifier = Modifier.weight(2f))
-
-
             }
-
-
         }
     }
 }
+
+@Composable
+fun AchievementStep(achievement: Achievement) {
+    val palette = getPalette()
+    val isUnlocked = achievement.isUnlocked
+
+    val titleColor = if (isUnlocked) palette.onSurfaceVariant else palette.tertiary
+    val descColor = if (isUnlocked) palette.onSurfaceVariant.copy(alpha = 0.5f) else palette.secondary
+    val icon = if (isUnlocked) "✅" else "🔒"
+
+    val title = stringResource(id = achievement.titleResId)
+    val desc = stringResource(id = achievement.descriptionResId)
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = icon,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = title,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = Rowdies,
+                color = titleColor
+            )
+        }
+        Text(
+            text = desc,
+            fontSize = 16.sp,
+            fontFamily = Rowdies,
+            fontWeight = FontWeight.Normal,
+            color = descColor,
+            modifier = Modifier.padding(start = 32.dp)
+        )
+    }
+}
+
+
 

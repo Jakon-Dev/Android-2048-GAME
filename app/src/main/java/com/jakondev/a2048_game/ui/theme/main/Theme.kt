@@ -54,16 +54,26 @@ val LightColorPalette = lightColorScheme(
 
 @Composable
 fun getPalette(): ColorScheme {
-    return if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette
+    val isDark = LocalIsDarkMode.current
+    return if (isDark) DarkColorPalette else LightColorPalette
 }
 
 @Composable
-fun AppTheme(content: @Composable () -> Unit) {
-    val colorScheme = if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette
+fun AppTheme(
+    isDarkMode: Boolean,
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (isDarkMode) DarkColorPalette else LightColorPalette
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    androidx.compose.runtime.CompositionLocalProvider(
+        LocalIsDarkMode provides isDarkMode
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }
+
+

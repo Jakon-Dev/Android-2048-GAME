@@ -1,8 +1,6 @@
 package com.jakondev.a2048_game.ui.navigation
 
-import android.app.Activity
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -23,6 +21,7 @@ import com.jakondev.a2048_game.ui.theme.main.getPalette
 import com.jakondev.a2048_game.util.StylizedButton
 import com.jakondev.a2048_game.util.exitButton
 import com.jakondev.a2048_game.viewmodel.GameViewModel
+
 
 @Composable
 fun MainMenu(
@@ -136,12 +135,6 @@ fun MainMenuButtons(
                 )
             )
         }
-        add(
-            StylizedButtonConfig(
-                label = stringResource(id = R.string.match_history),
-                onClick = { navController.navigate("history") }
-            )
-        )
     }
 
 
@@ -187,6 +180,7 @@ fun BottomNavigationRow(navController: NavController) {
         val buttons = listOf(
             Triple(Icons.Filled.ShoppingCart, R.string.shop, "shop"),
             Triple(Icons.Filled.Star, R.string.achievements, "achievements"),
+            Triple(Icons.Filled.DateRange, R.string.match_history, "history"),
             Triple(Icons.Filled.Settings, R.string.settings, "settings")
         )
 

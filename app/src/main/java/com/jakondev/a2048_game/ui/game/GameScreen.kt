@@ -222,6 +222,8 @@ private fun SharedDialogButtons(
     navController: NavController
 ) {
     val context = LocalContext.current
+    val username = viewModel.userPreferences.collectAsState().value.username
+
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -247,7 +249,7 @@ private fun SharedDialogButtons(
                 text = stringResource(R.string.share_via_email),
                 onClick = {
                     val subject = context.getString(R.string.email_subject)
-                    val body = context.getString(R.string.email_body, score, formatTime(time))
+                    val body = context.getString(R.string.email_body, username, score, formatTime(time))
                     sendEmail(context, subject, body)
                 },
                 buttonWidth = 120.dp,

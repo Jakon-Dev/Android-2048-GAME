@@ -3,7 +3,6 @@ package com.jakondev.a2048_game.viewmodel
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jakondev.a2048_game.data.GameDatabase
 import com.jakondev.a2048_game.data.GameRepository
@@ -13,15 +12,66 @@ import kotlinx.coroutines.flow.*
 import kotlin.random.Random
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.example.game2048.R
+import com.jakondev.a2048_game.data.AchievementRepository
+import com.jakondev.a2048_game.model.Achievement
 
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     val COLUMNS = 4
     val ROWS = 4
 
+    private val prefsRepo = com.jakondev.a2048_game.data.UserPreferencesRepository(application)
+    private val _userPreferences = MutableStateFlow(com.jakondev.a2048_game.data.UserPreferences())
+    val userPreferences: StateFlow<com.jakondev.a2048_game.data.UserPreferences> = _userPreferences
+
+    private val achievementRepo = AchievementRepository(GameDatabase.getDatabase(application).achievementDao())
+    val achievements = achievementRepo.achievements.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
+
+    fun unlockAchievement(id: String) {
+        viewModelScope.launch {
+            achievementRepo.unlockAchievement(id)
+        }
+    }
+
+    private fun defaultAchievements() = listOf(
+        Achievement("first_game", R.string.AC_first_game_title, R.string.AC_first_game_desc),
+        Achievement("win_game", R.string.AC_win_game_title, R.string.AC_win_game_desc),
+        Achievement("high_score_5000", R.string.AC_high_score_5000_title, R.string.AC_high_score_5000_desc),
+        Achievement("high_score_10000", R.string.AC_high_score_10000_title, R.string.AC_high_score_10000_desc),
+        Achievement("move_100", R.string.AC_move_100_title, R.string.AC_move_100_desc),
+        Achievement("swipe_undo", R.string.AC_swipe_undo_title, R.string.AC_swipe_undo_desc),
+        Achievement("tile_512", R.string.AC_tile_512_title, R.string.AC_tile_512_desc),
+        Achievement("tile_1024", R.string.AC_tile_1024_title, R.string.AC_tile_1024_desc),
+        Achievement("tile_2048", R.string.AC_tile_2048_title, R.string.AC_tile_2048_desc),
+    )
+
+
+
+
+    init {
+        viewModelScope.launch {
+            achievementRepo.insertDefaults(defaultAchievements())
+        }
+
+        viewModelScope.launch {
+            prefsRepo.preferencesFlow.collect {
+                _userPreferences.value = it
+            }
+        }
+    }
+
     // -------------------------
     // ESTADO DEL JUEGO
     // -------------------------
+
+
+
+
     private val _board = MutableStateFlow(Array(ROWS) { IntArray(COLUMNS) })
     val board: StateFlow<Array<IntArray>> = _board.asStateFlow()
 
@@ -122,6 +172,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun playSoundEffect(event: SoundEvent) {
+        if (_userPreferences.value.isMuted) return
         viewModelScope.launch {
             _playSound.emit(event)
         }
@@ -150,6 +201,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     // -------------------------
 
     fun resetGame() {
+        unlockAchievement("first_game")
         val newBoard = SampleBoards().empty
         repeat(2) { addRandomTile(newBoard) }
         _board.value = newBoard
@@ -177,10 +229,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun incrementSwipes() {
         _swipes.value++
+        if (_swipes.value >= 100) unlockAchievement("move_100")
     }
 
     fun undoMove() {
         if (!boardEquals(_board.value, _prevBoard.value)) {
+            unlockAchievement("swipe_undo")
             _board.value = _prevBoard.value.map { it.clone() }.toTypedArray()
             _swipes.value = (_swipes.value - 1).coerceAtLeast(0)
             _isGameOver.value = false
@@ -275,14 +329,23 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 compacted[i] *= 2
                 playSoundEffect(SoundEvent.Pop)
                 gained += compacted[i]
-                Log.d(TAG, "Merged tiles to ${compacted[i]}")
-                if (compacted[i] == 2048 && !_hasWon.value) {
-                    _is2048.value = true
-                    _hasWon.value = true
-                    playSoundEffect(SoundEvent.Win)
-                    saveCurrentGame(context = getApplication(), reason = "win")
-                    Log.d(TAG, "2048 tile achieved!")
+
+                when (compacted[i]) {
+                    512 -> unlockAchievement("tile_512")
+                    1024 -> unlockAchievement("tile_1024")
+                    2048 -> {
+                        unlockAchievement("tile_2048")
+                        if (!_hasWon.value) {
+                            _is2048.value = true
+                            _hasWon.value = true
+                            playSoundEffect(SoundEvent.Win)
+                            saveCurrentGame(context = getApplication(), reason = "win")
+                            Log.d(TAG, "2048 tile achieved!")
+                            unlockAchievement("win_game")
+                        }
+                    }
                 }
+
                 compacted.removeAt(i + 1)
             }
             i++
@@ -292,6 +355,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         if (gained > 0){
             Log.d(TAG, "Score increased by $gained. Total: ${_score.value}")
         }
+        if (_score.value >= 5000) unlockAchievement("high_score_5000")
+        if (_score.value >= 10000) unlockAchievement("high_score_10000")
         return compacted.toIntArray().copyOf(COLUMNS)
     }
 

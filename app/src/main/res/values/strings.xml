@@ -17,7 +17,7 @@
     <string name="achievements">Achievements</string>
     <string name="share_via_email">Share</string>
     <string name="email_subject">Check my score in 2048!</string>
-    <string name="email_body">Hey! I just scored %1$d points in 2048 and I have been playing for %2$s minutes. Try to beat me!</string>
+    <string name="email_body">Hey, it\'s %1$! I just scored %2$d points in 2048 and I have been playing for %3$s minutes. Try to beat me!</string>
     <string name="info">Information</string>
     <string name="tutorial_objective_info">Combine numbers until you reach 2048.</string>
     <string name="tutorial_objective_title">Objective</string>
@@ -40,5 +40,24 @@
     <string name="movements">Movements: %1$</string>
     <string name="result">Result:</string>
     <string name="clear_history">Clear History</string>
-
+    <string name="username">Username</string>
+    <string name="save">Save</string>
+    <string name="AC_first_game_title">First game</string>
+    <string name="AC_win_game_title">Victory</string>
+    <string name="AC_high_score_5000_title">Master</string>
+    <string name="AC_high_score_10000_title">Legend</string>
+    <string name="AC_move_100_title">Active</string>
+    <string name="AC_swipe_undo_title">Strategist</string>
+    <string name="AC_tile_512_title">Powerful</string>
+    <string name="AC_tile_1024_title">Giant</string>
+    <string name="AC_tile_2048_title">The Chosen One</string>
+    <string name="AC_first_game_desc">Play your first game</string>
+    <string name="AC_win_game_desc">Win a game</string>
+    <string name="AC_high_score_5000_desc">Reach 5000 points</string>
+    <string name="AC_high_score_10000_desc">Reach 10000 points</string>
+    <string name="AC_move_100_desc">Make 100 moves in a single game</string>
+    <string name="AC_swipe_undo_desc">Undo a move</string>
+    <string name="AC_tile_512_desc">Make a 512 tile</string>
+    <string name="AC_tile_1024_desc">Make a 1024 tile</string>
+    <string name="AC_tile_2048_desc">Make a 2048 tile</string>
 </resources>

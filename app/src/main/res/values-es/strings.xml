@@ -17,7 +17,7 @@
     <string name="achievements">Logros</string>
     <string name="share_via_email">Compartir</string>
     <string name="email_subject">¡Mira mi puntuación en 2048!</string>
-    <string name="email_body">¡Ey! Acabo de lograr %1$d puntos en el 2048 y he jugado durante %2$s minutos. ¡Intenta ganarme!</string>
+    <string name="email_body">¡Ey, soy %1$! Acabo de lograr %2$d puntos en el 2048 y he jugado durante %3$s minutos. ¡Intenta ganarme!</string>
     <string name="info">Información</string>
     <string name="tutorial_combination_title">Combinación</string>
     <string name="tutorial_combination_info">Cuando dos bloques con el mismo número se tocan, se combinan en uno solo.</string>
@@ -40,4 +40,24 @@
     <string name="movements">Movimientos: %1$</string>
     <string name="result">Resultado:</string>
     <string name="clear_history">Borrar Historial</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="save">Guardar</string>
+    <string name="AC_first_game_title">Primer juego</string>
+    <string name="AC_win_game_title">Victoria</string>
+    <string name="AC_high_score_5000_title">Maestro</string>
+    <string name="AC_high_score_10000_title">Leyenda</string>
+    <string name="AC_move_100_title">Activo</string>
+    <string name="AC_swipe_undo_title">Estratega</string>
+    <string name="AC_tile_512_title">Poderoso</string>
+    <string name="AC_tile_1024_title">Gigante</string>
+    <string name="AC_tile_2048_title">El Elegido</string>
+    <string name="AC_first_game_desc">Juega tu primera partida</string>
+    <string name="AC_win_game_desc">Gana una partida</string>
+    <string name="AC_high_score_5000_desc">Llega a 5000 puntos</string>
+    <string name="AC_high_score_10000_desc">Llega a 10000 puntos</string>
+    <string name="AC_move_100_desc">Haz 100 movimientos en una partida</string>
+    <string name="AC_swipe_undo_desc">Deshaz un movimiento</string>
+    <string name="AC_tile_512_desc">Crea una casilla de 512</string>
+    <string name="AC_tile_1024_desc">Crea una casilla de 1024</string>
+    <string name="AC_tile_2048_desc">Crea una casilla de 2048</string>
 </resources>
