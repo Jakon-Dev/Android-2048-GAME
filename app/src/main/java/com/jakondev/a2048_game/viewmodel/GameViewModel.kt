@@ -1,55 +1,37 @@
 package com.jakondev.a2048_game.viewmodel
 
-import android.app.Application
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.game2048.R
-import com.jakondev.a2048_game.data.*
-import com.jakondev.a2048_game.model.*
+import com.jakondev.a2048_game.data.GameDatabase
+import com.jakondev.a2048_game.data.GameRepository
+import com.jakondev.a2048_game.model.GameResult
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.random.Random
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import com.example.game2048.R
+import com.jakondev.a2048_game.data.AchievementRepository
+import com.jakondev.a2048_game.model.Achievement
 
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
-    // ---------------------------------
-    // CONSTANTES
-    // ---------------------------------
     val COLUMNS = 4
     val ROWS = 4
 
-    // ---------------------------------
-    // REPOSITORIOS Y PREFERENCIAS
-    // ---------------------------------
-    private val prefsRepo = UserPreferencesRepository(application)
-    private val achievementRepo = AchievementRepository(GameDatabase.getInstance(getApplication()).achievementDao())
+    private val prefsRepo = com.jakondev.a2048_game.data.UserPreferencesRepository(application)
+    private val _userPreferences = MutableStateFlow(com.jakondev.a2048_game.data.UserPreferences())
+    val userPreferences: StateFlow<com.jakondev.a2048_game.data.UserPreferences> = _userPreferences
 
-    private val _userPreferences = MutableStateFlow(UserPreferences())
-    val userPreferences: StateFlow<UserPreferences> = _userPreferences
-
+    private val achievementRepo = AchievementRepository(GameDatabase.getInstance(application).achievementDao())
     val achievements = achievementRepo.achievements.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
 
-    init {
-        viewModelScope.launch {
-            Log.d(TAG, "Inicializando logros por defecto y preferencias de usuario...")
-            achievementRepo.insertDefaults(defaultAchievements())
-            prefsRepo.preferencesFlow.collect {
-                _userPreferences.value = it
-                Log.d(TAG, "Preferencias de usuario actualizadas: $it")
-            }
-        }
-    }
-
-    // ---------------------------------
-    // LOGRO (Achievements)
-    // ---------------------------------
     fun unlockAchievement(id: String) {
         viewModelScope.launch {
             achievementRepo.unlockAchievement(id)
@@ -68,9 +50,28 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         Achievement("tile_2048", R.string.AC_tile_2048_title, R.string.AC_tile_2048_desc),
     )
 
-    // ---------------------------------
+
+
+
+    init {
+        viewModelScope.launch {
+            achievementRepo.insertDefaults(defaultAchievements())
+        }
+
+        viewModelScope.launch {
+            prefsRepo.preferencesFlow.collect {
+                _userPreferences.value = it
+            }
+        }
+    }
+
+    // -------------------------
     // ESTADO DEL JUEGO
-    // ---------------------------------
+    // -------------------------
+
+
+
+
     private val _board = MutableStateFlow(Array(ROWS) { IntArray(COLUMNS) })
     val board: StateFlow<Array<IntArray>> = _board.asStateFlow()
 
@@ -96,81 +97,70 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val _time = MutableStateFlow(0)
     val time: StateFlow<Int> = _time.asStateFlow()
 
-    val gameOverReason = MutableStateFlow("timeout")
+    val gameOverReason = MutableStateFlow<String>("timeout")
+
     private var userAlias = "Player"
 
-    private val _canMoveUp = MutableStateFlow(true)
-    val canMoveUp: StateFlow<Boolean> = _canMoveUp
-
-    private val _canMoveDown = MutableStateFlow(true)
-    val canMoveDown: StateFlow<Boolean> = _canMoveDown
-
-    private val _canMoveLeft = MutableStateFlow(true)
-    val canMoveLeft: StateFlow<Boolean> = _canMoveLeft
-
-    private val _canMoveRight = MutableStateFlow(true)
-    val canMoveRight: StateFlow<Boolean> = _canMoveRight
-
-    // ---------------------------------
+    // -------------------------
     // TEMPORIZADOR
-    // ---------------------------------
+    // -------------------------
+
     private var isTimeRunning = false
     private var timerJob: Job? = null
 
     fun startTimer() {
         if (isTimeRunning) return
         isTimeRunning = true
-        Log.d(TAG, "Temporizador iniciado. Modo actual: ${currentMode.value}")
+        Log.d(TAG, "Timer started with mode: ${currentMode.value}")
 
         timerJob = viewModelScope.launch {
             while (isTimeRunning) {
                 delay(1000L)
-                Log.d(TAG, "Tick de temporizador. Tiempo actual: ${_time.value}")
 
                 if (currentMode.value == GameMode.CLASSIC) {
                     _time.value += 1
+                    if (_time.value % 5 == 0) {
+                        Log.d(TAG, "Classic mode time: ${_time.value}s")
+                    }
                 } else {
                     if (_time.value > 0) {
                         _time.value -= 1
+                        if (_time.value % 5 == 0) {
+                            Log.d(TAG, "Countdown time: ${_time.value}s")
+                        }
                     } else {
-                        Log.d(TAG, "Tiempo agotado. Fin del juego.")
                         isTimeRunning = false
                         _isGameOver.value = true
-                        gameOverReason.value = "timeout"
                         playSoundEffect(SoundEvent.Lose)
-                        saveCurrentGame(getApplication(), "timeout")
+                        gameOverReason.value = "timeout"
+                        saveCurrentGame(context = getApplication(), reason = "timeout")
+                        Log.d(TAG, "Game Over due to timeout")
                     }
                 }
             }
         }
     }
 
+
+
     fun pauseTimer() {
         isTimeRunning = false
-        timerJob?.cancel()
         Log.d(TAG, "Timer paused")
+        timerJob?.cancel()
     }
 
     fun resumeTimer() {
-        if (!isTimeRunning) startTimer()
+        if (!isTimeRunning){
+            startTimer()
+            Log.d(TAG, "Timer resumed")
+        }
+
     }
 
-    // ---------------------------------
-    // MODOS DE JUEGO
-    // ---------------------------------
-    var currentMode = MutableStateFlow(GameMode.CLASSIC)
-
-    enum class GameMode {
-        CLASSIC, COUNTDOWN_15, COUNTDOWN_20, COUNTDOWN_30
-    }
-
-    fun setGameMode(mode: GameMode) {
-        currentMode.value = mode
-    }
-
-    // ---------------------------------
+    // -------------------------
     // EFECTOS DE SONIDO
-    // ---------------------------------
+    // -------------------------
+
     private val _playSound = MutableSharedFlow<SoundEvent>()
     val playSound: SharedFlow<SoundEvent> = _playSound
 
@@ -183,14 +173,34 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun playSoundEffect(event: SoundEvent) {
         if (_userPreferences.value.isMuted) return
-        viewModelScope.launch { _playSound.emit(event) }
+        viewModelScope.launch {
+            _playSound.emit(event)
+        }
     }
 
-    // ---------------------------------
-    // CONTROL DEL JUEGO
-    // ---------------------------------
+    // -------------------------
+    // MODOS DE JUEGO
+    // -------------------------
+
+    var currentMode = MutableStateFlow(GameMode.CLASSIC)
+
+    enum class GameMode {
+        CLASSIC,
+        COUNTDOWN_15,
+        COUNTDOWN_20,
+        COUNTDOWN_30
+    }
+
+    fun setGameMode(mode: GameMode) {
+        currentMode.value = mode
+    }
+
+
+    // -------------------------
+    // CONTROL DE JUEGO
+    // -------------------------
+
     fun resetGame() {
-        Log.d(TAG, "Reiniciando juego...")
         unlockAchievement("first_game")
         val newBoard = SampleBoards().empty
         repeat(2) { addRandomTile(newBoard) }
@@ -202,16 +212,13 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         _is2048.value = false
         _hasWon.value = false
 
-        _time.value = when (currentMode.value) {
-            GameMode.COUNTDOWN_15 -> 15 * 60
-            GameMode.COUNTDOWN_20 -> 20 * 60
-            GameMode.COUNTDOWN_30 -> 30 * 60
-            else -> 0
+        when (currentMode.value) {
+            GameMode.COUNTDOWN_15 -> _time.value = 15 * 60
+            GameMode.COUNTDOWN_20 -> _time.value = 20 * 60
+            GameMode.COUNTDOWN_30 -> _time.value = 30 * 60
+            else -> _time.value = 0
         }
 
-        Log.d(TAG, "Tablero inicializado. Tiempo asignado: ${_time.value} segundos")
-
-        updateMovableDirections()
         startTimer()
     }
 
@@ -227,13 +234,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun undoMove() {
         if (!boardEquals(_board.value, _prevBoard.value)) {
-            Log.d(TAG, "Deshacer movimiento activado.")
             unlockAchievement("swipe_undo")
             _board.value = _prevBoard.value.map { it.clone() }.toTypedArray()
             _swipes.value = (_swipes.value - 1).coerceAtLeast(0)
             _isGameOver.value = false
         } else {
-            Log.d(TAG, "Deshacer movimiento no permitido.")
             triggerCannotUndoEffect()
         }
     }
@@ -246,23 +251,35 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun setUserAlias(alias: String) {
-        userAlias = alias
+    // -------------------------
+    // MOVIMIENTOS
+    // -------------------------
+
+    fun moveLeft() {
+        Log.d(TAG, "Move: LEFT")
+        moveRows { merge(it) }
     }
 
-    // ---------------------------------
-    // MOVIMIENTOS
-    // ---------------------------------
-    enum class Direction { UP, DOWN, LEFT, RIGHT }
+    fun moveRight() {
+        Log.d(TAG, "Move: RIGHT")
+        moveRows { merge(it.reversedArray()).reversedArray() }
+    }
 
-    fun moveLeft() = moveRows { merge(it) }.also { updateMovableDirections() }
-    fun moveRight() = moveRows { merge(it.reversedArray()).reversedArray() }.also { updateMovableDirections() }
-    fun moveUp() = moveColumns { merge(it) }.also { updateMovableDirections() }
-    fun moveDown() = moveColumns { merge(it.reversedArray()).reversedArray() }.also { updateMovableDirections() }
+    fun moveUp() {
+        Log.d(TAG, "Move: UP")
+        moveColumns { merge(it) }
+    }
+
+    fun moveDown() {
+        Log.d(TAG, "Move: DOWN")
+        moveColumns { merge(it.reversedArray()).reversedArray() }
+    }
+
 
     private fun moveRows(transform: (IntArray) -> IntArray) {
         val current = _board.value
         _prevBoard.value = current.map { it.clone() }.toTypedArray()
+
         val newBoard = Array(ROWS) { row -> transform(current[row]) }
         applyMove(newBoard)
     }
@@ -270,6 +287,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private fun moveColumns(transform: (IntArray) -> IntArray) {
         val current = _board.value
         _prevBoard.value = current.map { it.clone() }.toTypedArray()
+
         val newBoard = Array(ROWS) { IntArray(COLUMNS) }
 
         for (j in 0 until COLUMNS) {
@@ -283,55 +301,24 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun applyMove(newBoard: Array<IntArray>) {
         if (!boardEquals(newBoard, _board.value)) {
-            Log.d(TAG, "Movimiento aplicado. Tablero ha cambiado.")
             _prevBoard.value = _board.value.map { it.clone() }.toTypedArray()
             addRandomTile(newBoard)
             incrementSwipes()
-        } else {
-            Log.d(TAG, "Movimiento ignorado. El tablero no ha cambiado.")
         }
-
         _board.value = newBoard
-
         if (!canMakeMove(newBoard)) {
-            Log.d(TAG, "No se pueden hacer más movimientos. Juego terminado.")
             _isGameOver.value = true
             gameOverReason.value = "no_moves"
             playSoundEffect(SoundEvent.Lose)
-            saveCurrentGame(getApplication(), "lose")
+            saveCurrentGame(context = getApplication(), reason = "lose")
+            Log.d(TAG, "Game Over! Reason: ${gameOverReason.value}")
         }
     }
 
-    private fun updateMovableDirections() {
-        _canMoveUp.value = canMoveInDirection(Direction.UP)
-        _canMoveDown.value = canMoveInDirection(Direction.DOWN)
-        _canMoveLeft.value = canMoveInDirection(Direction.LEFT)
-        _canMoveRight.value = canMoveInDirection(Direction.RIGHT)
-    }
-
-    private fun canMoveInDirection(direction: Direction): Boolean {
-        val board = _board.value
-        for (row in 0 until ROWS) {
-            for (col in 0 until COLUMNS) {
-                val current = board[row][col]
-                if (current == 0) continue
-                val (nextRow, nextCol) = when (direction) {
-                    Direction.UP -> row - 1 to col
-                    Direction.DOWN -> row + 1 to col
-                    Direction.LEFT -> row to col - 1
-                    Direction.RIGHT -> row to col + 1
-                }
-                if (nextRow !in 0 until ROWS || nextCol !in 0 until COLUMNS) continue
-                val target = board[nextRow][nextCol]
-                if (target == 0 || target == current) return true
-            }
-        }
-        return false
-    }
-
-    // ---------------------------------
+    // -------------------------
     // LÓGICA DEL JUEGO
-    // ---------------------------------
+    // -------------------------
+
     private fun merge(row: IntArray): IntArray {
         val compacted = row.filter { it != 0 }.toMutableList()
         var i = 0
@@ -342,7 +329,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 compacted[i] *= 2
                 playSoundEffect(SoundEvent.Pop)
                 gained += compacted[i]
-                Log.d(TAG, "Combinación realizada: ${compacted[i]} en índice $i")
 
                 when (compacted[i]) {
                     512 -> unlockAchievement("tile_512")
@@ -350,26 +336,27 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                     2048 -> {
                         unlockAchievement("tile_2048")
                         if (!_hasWon.value) {
-                            Log.d(TAG, "Jugador ha ganado con 2048!")
                             _is2048.value = true
                             _hasWon.value = true
                             playSoundEffect(SoundEvent.Win)
-                            saveCurrentGame(getApplication(), "win")
+                            saveCurrentGame(context = getApplication(), reason = "win")
+                            Log.d(TAG, "2048 tile achieved!")
                             unlockAchievement("win_game")
                         }
                     }
                 }
+
                 compacted.removeAt(i + 1)
             }
             i++
         }
 
         _score.value += gained
-        Log.d(TAG, "Puntos ganados en merge: $gained, Puntaje total: ${_score.value}")
-
+        if (gained > 0){
+            Log.d(TAG, "Score increased by $gained. Total: ${_score.value}")
+        }
         if (_score.value >= 5000) unlockAchievement("high_score_5000")
         if (_score.value >= 10000) unlockAchievement("high_score_10000")
-
         return compacted.toIntArray().copyOf(COLUMNS)
     }
 
@@ -388,8 +375,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun boardEquals(a: Array<IntArray>, b: Array<IntArray>) =
-        a.indices.all { i -> a[i].contentEquals(b[i]) }
+    private fun boardEquals(a: Array<IntArray>, b: Array<IntArray>): Boolean {
+        return a.indices.all { i -> a[i].contentEquals(b[i]) }
+    }
 
     private fun canMakeMove(board: Array<IntArray>): Boolean {
         for (i in 0..3) {
@@ -402,8 +390,17 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         return false
     }
 
+
+
+    fun setUserAlias(alias: String) {
+        userAlias = alias
+    }
+
     fun saveCurrentGame(context: Context, reason: String) {
-        val boardState = _board.value.joinToString("|") { row -> row.joinToString(",") }
+        val boardState = _board.value.joinToString(separator = "|") { row ->
+            row.joinToString(",")
+        }
+
         val result = when (reason) {
             "win" -> "WIN"
             "timeout" -> "TIMEOUT"
@@ -419,13 +416,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             date = System.currentTimeMillis()
         )
 
-        Log.d(TAG, "Guardando resultado del juego: $gameResult")
-
         viewModelScope.launch {
             val db = GameDatabase.getInstance(getApplication())
             val repo = GameRepository(db.gameResultDao())
             repo.insert(gameResult)
-            Log.d(TAG, "Resultado del juego guardado en base de datos.")
         }
     }
+
+
 }

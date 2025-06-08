@@ -16,13 +16,13 @@ class SampleBoards {
         intArrayOf(0, 0, 0, 0),
         intArrayOf(0, 0, 0, 0),
         intArrayOf(0, 0, 0, 1024),
-        intArrayOf(0, 0, 0, 1024)
+        intArrayOf(0, 0, 0, 1024),
     )
 
     val maxTable = arrayOf(
         intArrayOf(2, 2, 4, 8),
         intArrayOf(128, 64, 32, 16),
         intArrayOf(256, 512, 1024, 2048),
-        intArrayOf(32768, 16384, 8192, 4092)
+        intArrayOf(32768, 16384, 8192, 4092),
     )
 }
