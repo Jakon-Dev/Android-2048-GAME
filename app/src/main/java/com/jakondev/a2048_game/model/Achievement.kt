@@ -10,4 +10,3 @@ data class Achievement(
     val descriptionResId: Int,
     val isUnlocked: Boolean = false
 )
-

@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -52,8 +53,10 @@ fun StylizedButton(
     buttonColor: androidx.compose.ui.graphics.Color = getPalette().surface,
     outlineColor: androidx.compose.ui.graphics.Color = getPalette().tertiary,
     icon: @Composable (() -> Unit)? = null,
-    textColor: androidx.compose.ui.graphics.Color = getPalette().tertiary
-) {
+    textColor: androidx.compose.ui.graphics.Color = getPalette().tertiary,
+    maxSize: Dp? = null,
+    onPressValidation: (() -> Boolean)? = null,
+    ) {
     var pressed by remember { mutableStateOf(false) }
 
     val cornerRadius = 12.dp
@@ -77,9 +80,26 @@ fun StylizedButton(
         label = "outlineHeight"
     )
 
+    val dynamicButtonColor = if (pressed && onPressValidation != null && !onPressValidation()) {
+        getPalette().error
+    } else {
+        buttonColor
+    }
+
+    val dynamicTextColor = if (pressed && onPressValidation != null && !onPressValidation()) {
+        getPalette().onError
+    } else {
+        textColor
+    }
+
     Box(
         contentAlignment = Alignment.BottomCenter,
         modifier = Modifier
+            .then(
+                if (maxSize != null) {
+                    Modifier.sizeIn(maxWidth = maxSize, maxHeight = maxSize)
+                } else Modifier
+            )
             .width(computedButtonWidth)
             .height(computedButtonHeight)
     ) {
@@ -99,15 +119,18 @@ fun StylizedButton(
                     .width(computedButtonWidth)
                     .height(computedButtonHeight)
                     .clip(RoundedCornerShape(cornerRadius))
-                    .background(buttonColor)
+                    .background(dynamicButtonColor)
                     .border(2.dp, outlineColor, RoundedCornerShape(cornerRadius))
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onPress = {
                                 pressed = true
+                                val isValid = onPressValidation?.invoke() ?: true
                                 try {
                                     awaitRelease()
-                                    onClick()
+                                    if (isValid) {
+                                        onClick()
+                                    }
                                 } finally {
                                     pressed = false
                                 }
@@ -124,7 +147,7 @@ fun StylizedButton(
                         fontSize = textSize,
                         fontFamily = Rowdies,
                         fontWeight = FontWeight.Bold,
-                        color = textColor
+                        color = dynamicTextColor
                     )
                 }
             }

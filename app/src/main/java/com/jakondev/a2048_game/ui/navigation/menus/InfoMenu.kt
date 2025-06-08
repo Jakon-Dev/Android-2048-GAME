@@ -97,8 +97,7 @@ fun InfoMenu(
                             title = stringResource(id = R.string.tutorial_controles_title),
                             description = stringResource(id = R.string.tutorial_controles_info)
                         )
-                        Spacer(modifier = Modifier.weight(0.1f))
-
+                        Spacer(modifier = Modifier.weight(2f))
                     }
                     Spacer(modifier = Modifier.weight(0.1f))
                     Column(

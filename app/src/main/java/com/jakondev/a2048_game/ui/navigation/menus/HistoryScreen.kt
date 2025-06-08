@@ -30,12 +30,13 @@ import java.util.*
 @Composable
 fun HistoryScreen(navController: NavController) {
     val context = LocalContext.current
+    val application = context.applicationContext as android.app.Application
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     var gameResults by remember { mutableStateOf(listOf<GameResult>()) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        val db = GameDatabase.getDatabase(context)
+        val db = GameDatabase.getInstance(application)
         val repo = GameRepository(db.gameResultDao())
         repo.allResults.collect { results -> gameResults = results }
     }
@@ -71,7 +72,15 @@ fun HistoryScreen(navController: NavController) {
 
                 if (gameResults.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("No hay partidas guardadas.")
+                        Text(
+                            text = stringResource(id = R.string.no_matches_history),
+                            fontSize = 16.sp,
+                            fontFamily = Rowdies,
+                            fontWeight = FontWeight.Normal,
+                            color = getPalette().tertiary,
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 24.dp)
+                        )
                     }
                 } else {
                     LazyColumn(
@@ -88,7 +97,7 @@ fun HistoryScreen(navController: NavController) {
                         text = stringResource(id = R.string.clear_history),
                         onClick = {
                             scope.launch {
-                                val db = GameDatabase.getDatabase(context)
+                                val db = GameDatabase.getInstance(application)
                                 val repo = GameRepository(db.gameResultDao())
                                 repo.clearAll()
                             }
@@ -131,11 +140,13 @@ fun HistoryScreen(navController: NavController) {
                 if (gameResults.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            text = "No hay partidas guardadas.",
-                            fontSize = 20.sp,
+                            text = stringResource(id = R.string.no_matches_history),
+                            fontSize = 16.sp,
                             fontFamily = Rowdies,
-                            fontWeight = FontWeight.Medium,
-                            color = getPalette().secondary
+                            fontWeight = FontWeight.Normal,
+                            color = getPalette().tertiary,
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 24.dp)
                         )
                     }
                 } else {
@@ -144,7 +155,7 @@ fun HistoryScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                        ) {
+                    ) {
                         items(gameResults) { result ->
                             HistoryStep(result)
                         }
@@ -154,7 +165,7 @@ fun HistoryScreen(navController: NavController) {
                         text = stringResource(id = R.string.clear_history),
                         onClick = {
                             scope.launch {
-                                val db = GameDatabase.getDatabase(context)
+                                val db = GameDatabase.getInstance(application)
                                 val repo = GameRepository(db.gameResultDao())
                                 repo.clearAll()
                             }

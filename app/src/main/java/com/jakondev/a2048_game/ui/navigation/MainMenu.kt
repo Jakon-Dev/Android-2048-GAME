@@ -178,7 +178,6 @@ fun BottomNavigationRow(navController: NavController) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         val buttons = listOf(
-            Triple(Icons.Filled.ShoppingCart, R.string.shop, "shop"),
             Triple(Icons.Filled.Star, R.string.achievements, "achievements"),
             Triple(Icons.Filled.DateRange, R.string.match_history, "history"),
             Triple(Icons.Filled.Settings, R.string.settings, "settings")

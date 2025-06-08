@@ -33,5 +33,4 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             repo.updateUsername(name)
         }
     }
-
 }

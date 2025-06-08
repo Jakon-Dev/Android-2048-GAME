@@ -60,4 +60,5 @@
     <string name="AC_tile_512_desc">Make a 512 tile</string>
     <string name="AC_tile_1024_desc">Make a 1024 tile</string>
     <string name="AC_tile_2048_desc">Make a 2048 tile</string>
+    <string name="no_matches_history">There are no matches in the history.</string>
 </resources>

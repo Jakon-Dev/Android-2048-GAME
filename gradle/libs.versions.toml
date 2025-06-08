@@ -13,6 +13,7 @@ navigationCompose = "2.8.9"
 roomCommonJvm = "2.7.1"
 roomRuntimeAndroid = "2.7.1"
 room = "2.7.1"
+window = "1.4.0"
 
 
 [libraries]
@@ -37,6 +38,7 @@ androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version = "1.0.0" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }
 
 
 

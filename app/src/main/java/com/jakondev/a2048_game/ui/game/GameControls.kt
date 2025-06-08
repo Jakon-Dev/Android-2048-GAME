@@ -46,6 +46,11 @@ private fun GameControlsLandscape(
     val buttonWidth = 120.dp
     val buttonHeight = 50.dp
 
+    val canMoveUp by viewModel.canMoveUp.collectAsState()
+    val canMoveDown by viewModel.canMoveDown.collectAsState()
+    val canMoveLeft by viewModel.canMoveLeft.collectAsState()
+    val canMoveRight by viewModel.canMoveRight.collectAsState()
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -70,7 +75,11 @@ private fun GameControlsLandscape(
                 onUp = viewModel::moveUp,
                 onDown = viewModel::moveDown,
                 onLeft = viewModel::moveLeft,
-                onRight = viewModel::moveRight
+                onRight = viewModel::moveRight,
+                canMoveUp = canMoveUp,
+                canMoveDown = canMoveDown,
+                canMoveLeft = canMoveLeft,
+                canMoveRight = canMoveRight
             )
             UndoButtonSection(canUndo = canUndo) { viewModel.undoMove() }
             GameButtonsSection(viewModel, navController, buttonWidth, buttonHeight)
@@ -89,6 +98,11 @@ private fun GameControlsPortrait(
     val buttonWidth = 120.dp
     val buttonHeight = 50.dp
 
+    val canMoveUp by viewModel.canMoveUp.collectAsState()
+    val canMoveDown by viewModel.canMoveDown.collectAsState()
+    val canMoveLeft by viewModel.canMoveLeft.collectAsState()
+    val canMoveRight by viewModel.canMoveRight.collectAsState()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(5.dp)
@@ -97,7 +111,11 @@ private fun GameControlsPortrait(
             onUp = viewModel::moveUp,
             onDown = viewModel::moveDown,
             onLeft = viewModel::moveLeft,
-            onRight = viewModel::moveRight
+            onRight = viewModel::moveRight,
+            canMoveUp = canMoveUp,
+            canMoveDown = canMoveDown,
+            canMoveLeft = canMoveLeft,
+            canMoveRight = canMoveRight
         )
         UndoButtonSection(canUndo = canUndo) { viewModel.undoMove() }
         GameButtonsSection(viewModel, navController, buttonWidth, buttonHeight)
@@ -178,7 +196,7 @@ private fun GameButtonsSection(
             buttonWidth = buttonWidth,
             buttonHeight = buttonHeight,
             size = 40.dp,
-            textSize = 20.sp
+            textSize = 20.sp,
         )
         Spacer(modifier = Modifier.weight(3f))
     }
@@ -189,7 +207,11 @@ fun DirectionControls(
     onUp: () -> Unit,
     onDown: () -> Unit,
     onLeft: () -> Unit,
-    onRight: () -> Unit
+    onRight: () -> Unit,
+    canMoveUp: Boolean,
+    canMoveDown: Boolean,
+    canMoveLeft: Boolean,
+    canMoveRight: Boolean
 ) {
     BoxWithConstraints(
         modifier = Modifier
@@ -202,7 +224,7 @@ fun DirectionControls(
         val spacing = maxWidth * 0.04f
         val textSize = if (isLandscape) 30.sp else 50.sp
         val buttonHeight = buttonSize
-
+        val maxSize = 100.dp
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -214,7 +236,16 @@ fun DirectionControls(
                     .wrapContentWidth(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.Center
             ) {
-                StylizedButton("↑", onUp, size = buttonSize, textSize = textSize)
+                StylizedButton(
+                    "↑",
+                    onClick = onUp,
+                    size = buttonSize,
+                    textSize = textSize,
+                    maxSize = maxSize,
+                    buttonColor = getPalette().surface,
+                    textColor = getPalette().tertiary,
+                    onPressValidation = { canMoveUp }
+                )
             }
 
             Row(
@@ -224,11 +255,38 @@ fun DirectionControls(
                     .fillMaxWidth()
                     .height(buttonHeight)
             ) {
-                StylizedButton("←", onLeft, size = buttonSize, textSize = textSize)
+                StylizedButton(
+                    "←",
+                    onClick = onLeft,
+                    size = buttonSize,
+                    textSize = textSize,
+                    maxSize = maxSize,
+                    buttonColor = getPalette().surface,
+                    textColor = getPalette().tertiary,
+                    onPressValidation = { canMoveLeft }
+                )
                 Spacer(modifier = Modifier.width(spacing))
-                StylizedButton("↓", onDown, size = buttonSize, textSize = textSize)
+                StylizedButton(
+                    "↓",
+                    onClick = onDown,
+                    size = buttonSize,
+                    textSize = textSize,
+                    maxSize = maxSize,
+                    buttonColor = getPalette().surface,
+                    textColor = getPalette().tertiary,
+                    onPressValidation = { canMoveDown }
+                )
                 Spacer(modifier = Modifier.width(spacing))
-                StylizedButton("→", onRight, size = buttonSize, textSize = textSize)
+                StylizedButton(
+                    "→",
+                    onClick = onRight,
+                    size = buttonSize,
+                    textSize = textSize,
+                    maxSize = maxSize,
+                    buttonColor = getPalette().surface,
+                    textColor = getPalette().tertiary,
+                    onPressValidation = { canMoveRight }
+                )
             }
         }
     }

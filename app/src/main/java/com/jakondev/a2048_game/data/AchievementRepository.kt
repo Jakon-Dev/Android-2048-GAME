@@ -2,7 +2,6 @@ package com.jakondev.a2048_game.data
 
 import com.jakondev.a2048_game.model.Achievement
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 
 class AchievementRepository(private val dao: AchievementDao) {
     val achievements: Flow<List<Achievement>> = dao.getAll()
@@ -16,10 +15,8 @@ class AchievementRepository(private val dao: AchievementDao) {
 
     suspend fun insertDefaults(defaults: List<Achievement>) {
         val current = dao.getAllAchievementsOnce()
-
         val existingIds = current.map { it.id }.toSet()
         val newAchievements = defaults.filterNot { it.id in existingIds }
-
         if (newAchievements.isNotEmpty()) {
             dao.insertAll(newAchievements)
         }

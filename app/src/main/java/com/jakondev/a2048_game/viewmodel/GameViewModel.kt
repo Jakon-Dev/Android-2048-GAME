@@ -25,7 +25,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val _userPreferences = MutableStateFlow(com.jakondev.a2048_game.data.UserPreferences())
     val userPreferences: StateFlow<com.jakondev.a2048_game.data.UserPreferences> = _userPreferences
 
-    private val achievementRepo = AchievementRepository(GameDatabase.getDatabase(application).achievementDao())
+    private val achievementRepo = AchievementRepository(GameDatabase.getInstance(getApplication()).achievementDao())
     val achievements = achievementRepo.achievements.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -100,6 +100,18 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     val gameOverReason = MutableStateFlow<String>("timeout")
 
     private var userAlias = "Player"
+
+    private val _canMoveUp = MutableStateFlow(true)
+    val canMoveUp: StateFlow<Boolean> = _canMoveUp
+
+    private val _canMoveDown = MutableStateFlow(true)
+    val canMoveDown: StateFlow<Boolean> = _canMoveDown
+
+    private val _canMoveLeft = MutableStateFlow(true)
+    val canMoveLeft: StateFlow<Boolean> = _canMoveLeft
+
+    private val _canMoveRight = MutableStateFlow(true)
+    val canMoveRight: StateFlow<Boolean> = _canMoveRight
 
     // -------------------------
     // TEMPORIZADOR
@@ -218,7 +230,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             GameMode.COUNTDOWN_30 -> _time.value = 30 * 60
             else -> _time.value = 0
         }
-
+        updateMovableDirections()
         startTimer()
     }
 
@@ -255,24 +267,68 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     // MOVIMIENTOS
     // -------------------------
 
+    enum class Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
+
+    private fun updateMovableDirections() {
+        _canMoveUp.value = canMoveInDirection(Direction.UP)
+        _canMoveDown.value = canMoveInDirection(Direction.DOWN)
+        _canMoveLeft.value = canMoveInDirection(Direction.LEFT)
+        _canMoveRight.value = canMoveInDirection(Direction.RIGHT)
+    }
+
+    private fun canMoveInDirection(direction: Direction): Boolean {
+        val currentBoard = _board.value
+
+        for (row in 0 until ROWS) {
+            for (col in 0 until COLUMNS) {
+                val current = currentBoard[row][col]
+                if (current == 0) continue
+
+                val (nextRow, nextCol) = when (direction) {
+                    Direction.UP -> row - 1 to col
+                    Direction.DOWN -> row + 1 to col
+                    Direction.LEFT -> row to col - 1
+                    Direction.RIGHT -> row to col + 1
+                }
+
+                if (nextRow !in 0 until ROWS || nextCol !in 0 until COLUMNS) continue
+
+                val target = currentBoard[nextRow][nextCol]
+
+                if (target == 0 || target == current) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+
+
     fun moveLeft() {
         Log.d(TAG, "Move: LEFT")
         moveRows { merge(it) }
+        updateMovableDirections()
     }
 
     fun moveRight() {
         Log.d(TAG, "Move: RIGHT")
         moveRows { merge(it.reversedArray()).reversedArray() }
+        updateMovableDirections()
     }
 
     fun moveUp() {
         Log.d(TAG, "Move: UP")
         moveColumns { merge(it) }
+        updateMovableDirections()
     }
 
     fun moveDown() {
         Log.d(TAG, "Move: DOWN")
         moveColumns { merge(it.reversedArray()).reversedArray() }
+        updateMovableDirections()
     }
 
 
@@ -417,11 +473,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         )
 
         viewModelScope.launch {
-            val db = GameDatabase.getDatabase(context)
+            val db = GameDatabase.getInstance(getApplication())
             val repo = GameRepository(db.gameResultDao())
             repo.insert(gameResult)
         }
     }
-
-
 }

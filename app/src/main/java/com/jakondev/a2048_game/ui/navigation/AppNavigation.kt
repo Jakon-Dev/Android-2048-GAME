@@ -5,11 +5,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jakondev.a2048_game.ui.game.GameScreen
 import com.jakondev.a2048_game.ui.navigation.menus.AchievementsMenu
 import com.jakondev.a2048_game.ui.navigation.menus.SettingsMenu
 import com.jakondev.a2048_game.ui.navigation.menus.ShopMenu
 import com.jakondev.a2048_game.viewmodel.GameViewModel
-import com.jakondev.a2048_game.ui.game.GameScreen
 import com.jakondev.a2048_game.ui.navigation.menus.GameSettingsMenu
 import com.jakondev.a2048_game.ui.navigation.menus.HistoryScreen
 import com.jakondev.a2048_game.ui.navigation.menus.InfoMenu

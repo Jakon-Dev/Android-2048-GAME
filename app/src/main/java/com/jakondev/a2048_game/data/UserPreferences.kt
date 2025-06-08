@@ -5,4 +5,3 @@ data class UserPreferences(
     val isDarkMode: Boolean = false,
     val username: String = "Player"
 )
-

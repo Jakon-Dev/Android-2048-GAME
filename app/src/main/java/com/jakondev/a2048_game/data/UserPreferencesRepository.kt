@@ -1,12 +1,11 @@
 package com.jakondev.a2048_game.data
 
 import android.content.Context
-import androidx.datastore.preferences.core.*
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
-private val Context.dataStore by preferencesDataStore(name = "user_prefs")
 
 class UserPreferencesRepository(private val context: Context) {
 
@@ -16,7 +15,7 @@ class UserPreferencesRepository(private val context: Context) {
         val USERNAME = stringPreferencesKey("username")
     }
 
-    val preferencesFlow: Flow<UserPreferences> = context.dataStore.data.map { prefs ->
+    val preferencesFlow: Flow<UserPreferences> = context.userDataStore.data.map { prefs ->
         UserPreferences(
             isMuted = prefs[IS_MUTED] ?: false,
             isDarkMode = prefs[DARK_MODE] ?: false,
@@ -25,16 +24,14 @@ class UserPreferencesRepository(private val context: Context) {
     }
 
     suspend fun updateMute(isMuted: Boolean) {
-        context.dataStore.edit { it[IS_MUTED] = isMuted }
+        context.userDataStore.edit { it[IS_MUTED] = isMuted }
     }
 
-
     suspend fun updateDarkMode(enabled: Boolean) {
-        context.dataStore.edit { it[DARK_MODE] = enabled }
+        context.userDataStore.edit { it[DARK_MODE] = enabled }
     }
 
     suspend fun updateUsername(newName: String) {
-        context.dataStore.edit { it[USERNAME] = newName }
+        context.userDataStore.edit { it[USERNAME] = newName }
     }
-
 }

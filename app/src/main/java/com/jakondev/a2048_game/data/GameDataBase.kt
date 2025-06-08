@@ -1,11 +1,11 @@
 package com.jakondev.a2048_game.data
 
-import android.content.Context
+import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.jakondev.a2048_game.model.GameResult
 import com.jakondev.a2048_game.model.Achievement
+import com.jakondev.a2048_game.model.GameResult
 
 @Database(
     entities = [GameResult::class, Achievement::class],
@@ -19,10 +19,10 @@ abstract class GameDatabase : RoomDatabase() {
     companion object {
         @Volatile private var INSTANCE: GameDatabase? = null
 
-        fun getDatabase(context: Context): GameDatabase {
+        fun getInstance(application: Application): GameDatabase {
             return INSTANCE ?: synchronized(this) {
                 Room.databaseBuilder(
-                    context.applicationContext,
+                    application,
                     GameDatabase::class.java,
                     "game_database"
                 ).fallbackToDestructiveMigration().build().also { INSTANCE = it }
